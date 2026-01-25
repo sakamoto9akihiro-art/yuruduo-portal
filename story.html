@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STORY - ゆるデュオ△</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- トップページ共通変数 --- */
+        :root {
+            --bg-color: #FFF9F0;
+            --text-color: #5D4037;
+            --accent-color: #E67E22;
+            --sub-accent: #F39C12;
+            --card-bg: #FFFFFF;
+            --border-radius: 20px;
+            --font-main: 'Zen Maru Gothic', sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+
+        body.unsung-mode {
+            --bg-color: #1A1A1A;
+            --text-color: #ECF0F1;
+            --accent-color: #9B59B6;
+            --sub-accent: #E74C3C;
+            --card-bg: #2C3E50;
+        }
+
+
+        /* --- ベーススタイル --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+        /* --- ヘッダー・ナビ（共通） --- */
+        header { text-align: center; margin-top: 2rem; }
+        .logo-title { font-size: 3rem; color: var(--accent-color); margin-bottom: 0.5rem; transition: color var(--transition-speed); }
+        .main-nav { display: flex; justify-content: center; gap: 15px; margin: 30px 0; flex-wrap: wrap; }
+        .nav-item {
+            text-decoration: none; color: var(--text-color); background: var(--card-bg);
+            padding: 12px 24px; border-radius: 50px; border: 3px solid var(--accent-color);
+            font-weight: bold; transition: all 0.3s ease; box-shadow: 4px 4px 0px var(--accent-color);
+        }
+        .nav-item:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0px var(--accent-color); }
+
+
+        /* --- マスキングテープ（共通） --- */
+        .tape-header {
+            display: inline-block; background: var(--sub-accent); color: white;
+            padding: 8px 30px; transform: rotate(-1.5deg); margin-bottom: 15px;
+            position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            transition: background var(--transition-speed);
+        }
+        .tape-header::before, .tape-header::after {
+            content: ''; position: absolute; width: 15px; height: 100%; background: var(--bg-color); top: 0; transition: background var(--transition-speed);
+        }
+        .tape-header::before { left: -8px; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+        .tape-header::after { right: -8px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+
+        /* --- STORY一覧スタイル --- */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+            justify-items: center;
+        }
+
+
+        .story-item {
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease;
+            max-width: 220px;
+        }
+
+
+        .story-item:hover {
+            transform: translateY(-10px);
+        }
+
+
+        /* 丸いアイコン部分 */
+        .story-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px dashed var(--accent-color);
+            padding: 8px;
+            margin: 0 auto 15px;
+            transition: border-color 0.3s ease, background var(--transition-speed);
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+
+        .story-circle img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+
+        /* エピソード文字情報 */
+        .story-info .ep-number {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+            transition: color var(--transition-speed);
+        }
+
+
+        .story-info .ep-title {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+
+        /* --- モード切替ボタン（共通） --- */
+        .mode-toggle {
+            position: fixed; bottom: 20px; right: 20px; background: var(--accent-color);
+            color: white; border: none; padding: 15px; border-radius: 50%; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 100;
+            font-size: 1.2rem; transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+
+    <header class="container">
+        <h1 class="logo-title">ゆるデュオ△</h1>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item">Top</a>
+            <a href="story.html" class="nav-item">Story</a>
+            <a href="character.html" class="nav-item">Character</a>
+            <a href="world.html" class="nav-item">World</a>
+            <a href="movie.html" class="nav-item">Movie</a>
+        </nav>
+    </header>
+
+
+    <main class="container">
+        <h2 class="tape-header">Episodes</h2>
+       
+        <div class="story-grid">
+            <!-- 第1話 -->
+            <a href="story01.html" class="story-item">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode01" alt="第1話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第1話</span>
+                    <span class="ep-title">『旅のおともに<br>カレーめん』</span>
+                </div>
+            </a>
+
+
+            <!-- 第2話 -->
+            <a href="story02.html" class="story-item">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode02" alt="第2話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第2話</span>
+                    <span class="ep-title">『大晦日の<br>ソロキャンガール』</span>
+                </div>
+            </a>
+
+
+            <!-- 第3話 -->
+            <a href="story03.html" class="story-item">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode03" alt="第3話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第3話</span>
+                    <span class="ep-title">『たなぼたキャンプと<br>改めて思ったこと』</span>
+                </div>
+            </a>
+
+
+            <!-- 以降、第4話〜第7話などの追加用プレースホルダ -->
+            <a href="#" class="story-item" style="opacity: 0.6;">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/cccccc/ffffff/200x200.png?text=Next..." alt="Coming Soon">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第4話</span>
+                    <span class="ep-title">Coming Soon...</span>
+                </div>
+            </a>
+           
+        </div>
+    </main>
+
+
+    <footer style="text-align: center; padding: 50px 0; font-size: 0.9rem; opacity: 0.8;">
+        <p>&copy; ゆるデュオ△ 制作委員会</p>
+    </footer>
+
+
+    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">△</button>
+
+
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle('unsung-mode');
+            const btn = document.querySelector('.mode-toggle');
+            if (document.body.classList.contains('unsung-mode')) {
+                btn.innerHTML = '●';
+                btn.style.transform = 'scale(1.1) rotate(180deg)';
+            } else {
+                btn.innerHTML = '△';
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }
+        }
+    </script>
+</body>
+</html>
