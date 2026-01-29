@@ -1,0 +1,199 @@
+/* * ゆるデュオ△ 公式ポータルサイト 共通CSS
+ * デザインコンセプト：ゆるキャン△風のアウトドア感 × アンサング・デュエットの不穏なコントラスト
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap');
+
+/* --- デザイン変数定義 --- */
+:root {
+  /* 日常（Normal）モード */
+  --bg-color: #FFF9F0;
+  --text-color: #5D4037;
+  --accent-color: #E67E22;
+  --sub-accent: #F39C12;
+  --card-bg: #FFFFFF;
+  --border-radius: 20px;
+  --font-main: 'Zen Maru Gothic', sans-serif;
+  --transition-speed: 0.6s;
+  --noise-opacity: 0.05;
+}
+
+/* 異界（Unsung）モード */
+body.unsung-mode {
+  --bg-color: #121212;
+  --text-color: #D5D8DC;
+  --accent-color: #8E44AD;
+  --sub-accent: #C0392B;
+  --card-bg: #1E1E1E;
+  --noise-opacity: 0.15;
+}
+
+/* --- ベーススタイル --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-main);
+  line-height: 1.8;
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  overflow-x: hidden;
+  /* 紙のような質感を出すノイズオーバーレイ */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' /%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: var(--bg-color);
+  opacity: calc(1 - var(--noise-opacity));
+  z-index: -1;
+  pointer-events: none;
+}
+
+.container {
+  width: 90%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* --- ヘッダー・ロゴエリア --- */
+.site-header {
+  text-align: center;
+  padding: 40px 0 10px;
+}
+
+.logo-title {
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  color: var(--accent-color);
+  margin-bottom: 5px;
+  letter-spacing: 0.1rem;
+  transition: color var(--transition-speed);
+}
+
+/* --- 共通ナビゲーション --- */
+.main-nav {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: var(--text-color);
+  background: var(--card-bg);
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: 3px solid var(--accent-color);
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 4px 4px 0px var(--accent-color);
+}
+
+.nav-item:hover, .nav-item.active {
+  transform: translateY(-3px);
+  box-shadow: 6px 6px 0px var(--accent-color);
+  background: var(--accent-color);
+  color: white;
+}
+
+/* --- コンポーネント：マスキングテープ見出し --- */
+.tape-header {
+  display: inline-block;
+  background: var(--sub-accent);
+  color: white;
+  padding: 8px 30px;
+  transform: rotate(-1.5deg);
+  margin-bottom: 20px;
+  font-weight: bold;
+  position: relative;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transition: background var(--transition-speed);
+}
+
+.tape-header::before, .tape-header::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 100%;
+  background: var(--bg-color);
+  top: 0;
+  transition: background var(--transition-speed);
+}
+.tape-header::before { left: -8px; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+.tape-header::after { right: -8px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+/* --- コンポーネント：カード --- */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+  transition: background var(--transition-speed), transform 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* --- モード切替ボタン --- */
+.mode-toggle {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mode-toggle:hover {
+  transform: scale(1.1) rotate(15deg);
+}
+
+/* --- フッター --- */
+.main-footer {
+  text-align: center;
+  padding: 60px 0;
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+/* --- アニメーション --- */
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: floating 4s ease-in-out infinite;
+}
+
+/* レスポンシブ */
+@media (max-width: 600px) {
+  .logo-title { font-size: 2.2rem; }
+  .nav-item { padding: 8px 16px; font-size: 0.8rem; }
+  .card { padding: 20px; }
+}

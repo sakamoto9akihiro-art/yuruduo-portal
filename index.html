@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゆるデュオ△ - 公式ポータルサイト</title>
+    <!-- 共通CSSの読み込み -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* トップページ固有の調整：キービジュアルの最大化表示 */
+        .kv-area {
+            width: 100%;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .kv-wrapper {
+            display: inline-block;
+            max-width: 100%;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            transition: transform 0.5s ease, background var(--transition-speed);
+        }
+
+        .kv-wrapper img {
+            display: block;
+            width: 100%;
+            max-height: 95vh; /* 画面のほぼ高さ一杯まで表示 */
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+            transition: filter var(--transition-speed);
+        }
+
+        body.unsung-mode .kv-wrapper img {
+            filter: contrast(1.1) brightness(0.6) hue-rotate(180deg) saturate(0.9);
+        }
+
+        .content-body {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header container">
+        <h1 class="logo-title">ゆるデュオ△</h1>
+        <p>日常と異界、ときどきキャンプ。</p>
+    </header>
+
+    <nav class="main-nav container">
+        <a href="index.html" class="nav-item active">Top</a>
+        <a href="story.html" class="nav-item">Story</a>
+        <a href="character.html" class="nav-item">Character</a>
+        <a href="world.html" class="nav-item">World</a>
+        <a href="movie.html" class="nav-item">Movie</a>
+    </nav>
+
+    <div class="kv-area container">
+        <div class="kv-wrapper">
+            <!-- 縦長キービジュアル -->
+            <img src="https://lh3.googleusercontent.com/u/0/d/1R7xEalrDGGUiF_-RRB7UkNrkWr3J769m" alt="ゆるデュオ△ キービジュアル">
+        </div>
+    </div>
+
+    <main class="container content-body">
+        <section id="welcome">
+            <h2 class="tape-header">Welcome</h2>
+            <div class="card">
+                <p>
+                    TRPG『アンサング・デュエット』キャンペーン「ゆるデュオ△」のポータルサイトへようこそ。
+                </p>
+                <p style="margin-top: 1.2rem;">
+                    蛇場見マコトと川根なでこの、ゆるくて少し不穏な旅の軌跡をここに記録しています。
+                    二人の物語をどうぞごゆっくりご覧ください。
+                </p>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2 class="tape-header">About Site</h2>
+            <div class="card">
+                <p>
+                    このサイトは、セッションログ、キャラクター紹介、世界観設定などをまとめた個人用アーカイブです。
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
+    </footer>
+
+    <!-- 異界化ボタン -->
+    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
+        <span id="toggle-icon">△</span>
+    </button>
+
+    <script>
+        function toggleMode() {
+            const isUnsung = document.body.classList.toggle('unsung-mode');
+            const icon = document.getElementById('toggle-icon');
+            icon.innerText = isUnsung ? '●' : '△';
+        }
+    </script>
+
+</body>
+</html>

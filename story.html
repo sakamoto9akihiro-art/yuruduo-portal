@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STORY - ゆるデュオ△</title>
+    <!-- 共通CSSの読み込み -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- STORYページ固有のスタイル --- */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+            justify-items: center;
+        }
+
+        .story-item {
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease;
+            max-width: 220px;
+        }
+
+        .story-item:hover {
+            transform: translateY(-10px);
+        }
+
+        /* 丸いアイコン部分 */
+        .story-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px dashed var(--accent-color);
+            padding: 8px;
+            margin: 0 auto 15px;
+            transition: border-color 0.3s ease, background var(--transition-speed);
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .story-circle img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            transition: filter var(--transition-speed);
+        }
+
+        /* 異界モード時のアイコン演出 */
+        body.unsung-mode .story-circle img {
+            filter: grayscale(1) contrast(1.2) brightness(0.8);
+        }
+
+        /* エピソード情報 */
+        .story-info .ep-number {
+            display: block;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+            transition: color var(--transition-speed);
+        }
+
+        .story-info .ep-title {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            font-weight: 700;
+        }
+
+        /* ページ下部の余白 */
+        .story-container {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header container">
+        <h1 class="logo-title">ゆるデュオ△</h1>
+        <p>日常と異界、ときどきキャンプ。</p>
+    </header>
+
+    <nav class="main-nav container">
+        <a href="index.html" class="nav-item">Top</a>
+        <a href="story.html" class="nav-item active">Story</a>
+        <a href="character.html" class="nav-item">Character</a>
+        <a href="world.html" class="nav-item">World</a>
+        <a href="movie.html" class="nav-item">Movie</a>
+    </nav>
+
+    <main class="container story-container">
+        <h2 class="tape-header">Episodes</h2>
+        
+        <div class="story-grid">
+            <!-- 第1話 -->
+            <a href="story01.html" class="story-item">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode01" alt="第1話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第1話</span>
+                    <span class="ep-title">『旅のおともに<br>カレーめん』</span>
+                </div>
+            </a>
+
+            <!-- 第2話 -->
+            <a href="story02.html" class="story-item">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode02" alt="第2話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第2話</span>
+                    <span class="ep-title">『大晦日の<br>ソロキャンガール』</span>
+                </div>
+            </a>
+
+            <!-- 第3話 -->
+            <a href="story03.html" class="story-item">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode03" alt="第3話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第3話</span>
+                    <span class="ep-title">『たなぼたキャンプと<br>改めて思ったこと』</span>
+                </div>
+            </a>
+
+            <!-- 第4話以降（Coming Soon / プレースホルダ） -->
+            <a href="#" class="story-item" style="opacity: 0.6; cursor: default;">
+                <div class="story-circle">
+                    <img src="https://placehold.jp/24/cccccc/ffffff/200x200.png?text=Next..." alt="Coming Soon">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第4話</span>
+                    <span class="ep-title">Coming Soon...</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
+    </footer>
+
+    <!-- 異界化ボタン -->
+    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
+        <span id="toggle-icon">△</span>
+    </button>
+
+    <script>
+        function toggleMode() {
+            const isUnsung = document.body.classList.toggle('unsung-mode');
+            const icon = document.getElementById('toggle-icon');
+            icon.innerText = isUnsung ? '●' : '△';
+        }
+    </script>
+</body>
+</html>
