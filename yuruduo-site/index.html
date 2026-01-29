@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゆるデュオ△ - 公式ポータルサイト</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 共通変数設定 --- */
+        :root {
+            --bg-color: #FFF9F0;
+            --text-color: #5D4037;
+            --accent-color: #E67E22;
+            --sub-accent: #F39C12;
+            --card-bg: #FFFFFF;
+            --border-radius: 20px;
+            --font-main: 'Zen Maru Gothic', sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+
+        /* --- 異界（Unsung）モード用クラス --- */
+        body.unsung-mode {
+            --bg-color: #1A1A1A;
+            --text-color: #ECF0F1;
+            --accent-color: #9B59B6;
+            --sub-accent: #E74C3C;
+            --card-bg: #2C3E50;
+        }
+
+
+        /* --- ベーススタイル --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+        /* --- ヘッダー・ロゴ --- */
+        header {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+
+        .logo-title {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            transition: color var(--transition-speed);
+        }
+
+
+        /* --- ナビゲーション --- */
+        .main-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--text-color);
+            background: var(--card-bg);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 3px solid var(--accent-color);
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 4px 4px 0px var(--accent-color);
+        }
+
+
+        .nav-item:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--accent-color);
+        }
+
+
+        /* --- マスキングテープ風見出し --- */
+        .tape-header {
+            display: inline-block;
+            background: var(--sub-accent);
+            color: white;
+            padding: 8px 30px;
+            transform: rotate(-1.5deg);
+            margin-bottom: 15px;
+            position: relative;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            transition: background var(--transition-speed);
+        }
+
+
+        .tape-header::before, .tape-header::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 100%;
+            background: var(--bg-color);
+            top: 0;
+            transition: background var(--transition-speed);
+        }
+        .tape-header::before { left: -8px; clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+        .tape-header::after { right: -8px; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+
+
+        /* --- カード型UI --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: background var(--transition-speed);
+        }
+
+
+        .main-visual {
+            padding: 0;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+
+        .main-visual img {
+            width: 100%;
+            height: auto;
+            display: block;
+            min-height: 200px;
+        }
+
+
+        /* --- ニュースリスト --- */
+        .news-list {
+            list-style: none;
+        }
+        .news-list li {
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--accent-color);
+        }
+        .news-list li:last-child { border-bottom: none; }
+
+
+        /* --- フッター --- */
+        .main-footer {
+            text-align: center;
+            padding: 50px 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+
+        /* --- 演出用ボタン --- */
+        .mode-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            font-size: 1.2rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+
+    <header class="container">
+        <div class="logo-area">
+            <h1 class="logo-title">ゆるデュオ△</h1>
+            <p>日常と異界、ときどきキャンプ。</p>
+        </div>
+
+
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item">Top</a>
+            <!-- STORYページへのリンクを有効化 -->
+            <a href="story.html" class="nav-item">Story</a>
+            <a href="character.html" class="nav-item">Character</a>
+            <a href="world.html" class="nav-item">World</a>
+            <a href="movie.html" class="nav-item">Movie</a>
+        </nav>
+    </header>
+
+
+    <main class="container">
+        <!-- メインビジュアル -->
+        <section class="card main-visual">
+            <img src="https://lh3.googleusercontent.com/u/0/d/1mndySdVWnNpaPGIk83SYg_BNjfDZrn60" alt="[ゆるデュオ△ キービジュアル]" onerror="this.src='https://placehold.jp/24/e67e22/ffffff/800x450.png?text=キービジュアルのプレビュー表示には、Googleドライブ側の「リンクを知っている全員」への公開設定が必要です'">
+        </section>
+
+
+        <!-- はじめに -->
+        <section class="introduction">
+            <h2 class="tape-header">Welcome to Yuru-Duo</h2>
+            <div class="card">
+                <p>
+                    ここはTRPG『アンサング・デュエット』のキャンペーン「ゆるデュオ△」の記録をまとめたポータルサイトです。<br>
+                    蛇場見マコトと川根なでこの、ゆるくて少し不穏な旅の軌跡をお楽しみください。
+                </p>
+                <p style="margin-top: 15px; font-size: 0.9rem;">
+                    ※このサイトは身内用のキャンペーンログ保存庫です。
+                </p>
+            </div>
+        </section>
+
+
+        <!-- 更新履歴 -->
+        <section class="news">
+            <h2 class="tape-header">What's New</h2>
+            <div class="card">
+                <ul class="news-list">
+                    <li><span style="font-weight:bold; color:var(--accent-color);">2026.02.22</span> - 公式ポータルサイトをオープンしました。</li>
+                    <li><span style="font-weight:bold; color:var(--accent-color);">2026.01.17</span> - 第7話「その みちしるべ に すすんで」を開始しました。</li>
+                    <li><span style="font-weight:bold; color:var(--accent-color);">2025.12.01</span> - 第6話「こころ の かたち とう きょう」をクリアしました。</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+
+    <footer class="main-footer">
+        <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Fan Project</p>
+    </footer>
+
+
+    <!-- 異界化ボタン -->
+    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
+        △
+    </button>
+
+
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle('unsung-mode');
+            const btn = document.querySelector('.mode-toggle');
+            if (document.body.classList.contains('unsung-mode')) {
+                btn.innerHTML = '●';
+                btn.style.transform = 'scale(1.1) rotate(180deg)';
+            } else {
+                btn.innerHTML = '△';
+                btn.style.transform = 'scale(1) rotate(0deg)';
+            }
+        }
+    </script>
+
+
+</body>
+</html>
