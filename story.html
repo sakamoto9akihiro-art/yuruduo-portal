@@ -24,25 +24,27 @@
             max-width: 220px;
         }
 
-        .story-item:hover {
+        .story-item:not(.coming-soon):hover {
             transform: translateY(-10px);
         }
 
-        /* 丸いアイコン部分 */
+        /* 丸いアイコン部分：背景をオレンジに変更 */
         .story-circle {
             width: 180px;
             height: 180px;
             border-radius: 50%;
-            border: 4px dashed var(--accent-color);
+            /* 背景をオレンジ (#e67e22) に設定 */
+            background-color: #e67e22;
+            /* 枠線を白の点線にして、よりポップなデザインに */
+            border: 4px dashed #ffffff;
             padding: 8px;
             margin: 0 auto 15px;
-            transition: border-color 0.3s ease, background var(--transition-speed);
-            background: var(--card-bg);
+            transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
         .story-circle img {
@@ -52,9 +54,14 @@
             object-fit: cover;
             display: block;
             transition: filter var(--transition-speed);
+            background: transparent;
         }
 
         /* 異界モード時のアイコン演出 */
+        body.unsung-mode .story-circle {
+            background-color: #444; /* 異界時は背景を暗く */
+            border-color: #666;
+        }
         body.unsung-mode .story-circle img {
             filter: grayscale(1) contrast(1.2) brightness(0.8);
         }
@@ -73,6 +80,17 @@
             font-size: 0.95rem;
             line-height: 1.4;
             font-weight: 700;
+        }
+
+        /* プレースホルダ（Coming Soon）の調整 */
+        .story-item.coming-soon {
+            opacity: 0.6;
+            cursor: default;
+        }
+        .story-item.coming-soon .story-circle {
+            background-color: #cccccc;
+            border-style: dotted;
+            border-color: #ffffff;
         }
 
         /* ページ下部の余白 */
@@ -104,46 +122,90 @@
             <!-- 第1話 -->
             <a href="story01.html" class="story-item">
                 <div class="story-circle">
-                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode01" alt="第1話サムネイル">
+                    <img src="04_assets/Story/samuneil.png" alt="第1話サムネイル">
                 </div>
                 <div class="story-info">
                     <span class="ep-number">第1話</span>
-                    <span class="ep-title">『旅のおともに<br>カレーめん』</span>
+                    <span class="ep-title">『かどでのほしぞら』</span>
                 </div>
             </a>
 
             <!-- 第2話 -->
             <a href="story02.html" class="story-item">
                 <div class="story-circle">
-                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode02" alt="第2話サムネイル">
+                    <img src="04_assets/Story/samuneil.png" alt="第2話サムネイル">
                 </div>
                 <div class="story-info">
                     <span class="ep-number">第2話</span>
-                    <span class="ep-title">『大晦日の<br>ソロキャンガール』</span>
+                    <span class="ep-title">『いのち の いずる くに』</span>
                 </div>
             </a>
 
             <!-- 第3話 -->
             <a href="story03.html" class="story-item">
                 <div class="story-circle">
-                    <img src="https://placehold.jp/24/e67e22/ffffff/200x200.png?text=Episode03" alt="第3話サムネイル">
+                    <img src="04_assets/Story/samuneil.png" alt="第3話サムネイル">
                 </div>
                 <div class="story-info">
                     <span class="ep-number">第3話</span>
-                    <span class="ep-title">『たなぼたキャンプと<br>改めて思ったこと』</span>
+                    <span class="ep-title">『はいに しまわれた もり』</span>
                 </div>
             </a>
 
-            <!-- 第4話以降（Coming Soon / プレースホルダ） -->
-            <a href="#" class="story-item" style="opacity: 0.6; cursor: default;">
+            <!-- 第4話 -->
+            <a href="story04.html" class="story-item">
                 <div class="story-circle">
-                    <img src="https://placehold.jp/24/cccccc/ffffff/200x200.png?text=Next..." alt="Coming Soon">
+                    <img src="04_assets/Story/samuneil.png" alt="第4話サムネイル">
                 </div>
                 <div class="story-info">
                     <span class="ep-number">第4話</span>
-                    <span class="ep-title">Coming Soon...</span>
+                    <span class="ep-title">『せいれつなる じゅんれいしゃの さと』</span>
                 </div>
             </a>
+
+            <!-- 第5話 -->
+            <a href="story05.html" class="story-item">
+                <div class="story-circle">
+                    <img src="04_assets/Story/samuneil.png" alt="第5話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第5話</span>
+                    <span class="ep-title">『たぬき の くにの みやつこ』</span>
+                </div>
+            </a>
+
+            <!-- 第6話 -->
+            <a href="story06.html" class="story-item">
+                <div class="story-circle">
+                    <img src="04_assets/Story/samuneil.png" alt="第6話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第6話</span>
+                    <span class="ep-title">『こころ の かたち とう きょう』</span>
+                </div>
+            </a>
+
+            <!-- 第7話 -->
+            <a href="story07.html" class="story-item">
+                <div class="story-circle">
+                    <img src="04_assets/Story/samuneil.png" alt="第7話サムネイル">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第7話</span>
+                    <span class="ep-title">『その みちしるべ< に すすんで』</span>
+                </div>
+            </a>
+
+            <!-- 第8話 -->
+            <div class="story-item coming-soon">
+                <div class="story-circle">
+                    <img src="04_assets/Story/samuneil.png" alt="Coming Soon" style="filter: grayscale(1) opacity(0.5);">
+                </div>
+                <div class="story-info">
+                    <span class="ep-number">第8話</span>
+                    <span class="ep-title">Coming Soon...</span>
+                </div>
+            </div>
         </div>
     </main>
 
