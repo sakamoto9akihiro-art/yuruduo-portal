@@ -9,10 +9,9 @@
     <style>
         /* --- MOVIEページ固有のスタイル --- */
         
-        /* 動画グリッドレイアウト */
         .movie-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 40px;
             margin-top: 40px;
         }
@@ -23,7 +22,7 @@
             gap: 15px;
         }
 
-        /* 動画プレイヤーのコンテナ（16:9を維持） */
+        /* 動画プレイヤーのコンテナ */
         .video-container {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -32,60 +31,133 @@
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             position: relative;
-            border: 4px solid var(--card-bg);
-            transition: transform 0.3s ease, border-color var(--transition-speed);
+            border: 4px solid var(--card-bg, #f0f0f0);
+            cursor: pointer;
+            /* ホバー時の傾きアニメーションの準備 */
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.3s ease;
+            transform-origin: center;
         }
 
+        /* ご要望①：カーソルを合わせたら少し斜めになる */
         .video-container:hover {
-            transform: translateY(-5px);
+            transform: rotate(-2deg) scale(1.03) translateY(-5px);
+            z-index: 10;
         }
 
-        /* 実際の動画やiframeを入れるためのプレースホルダー演出 */
-        .video-placeholder {
+        .video-container video {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none; /* コンテナのクリックを優先 */
+        }
+
+        /* 動画内の再生マーク演出（画像2枚目のイメージ） */
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #555;
-            font-size: 0.9rem;
-            background: linear-gradient(45deg, #1a1a1a, #333);
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        .play-overlay::after {
+            content: "";
+            border-left: 20px solid #333;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+        }
+        .video-container:hover .play-overlay {
+            opacity: 1;
         }
 
-        /* 動画タイトル */
         .movie-title {
             font-weight: bold;
             font-size: 1.1rem;
-            color: var(--text-color);
+            color: var(--text-color, #333);
             padding: 0 5px;
             line-height: 1.4;
-            transition: color var(--transition-speed);
+            transition: color 0.3s ease;
         }
 
         .movie-title::before {
             content: "▶";
             margin-right: 8px;
-            color: var(--accent-color);
+            color: var(--accent-color, #e67e22);
             font-size: 0.8rem;
         }
 
-        /* 異界モード時の演出 */
+        /* ご要望②：拡大モーダル表示 */
+        #video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none; /* 初期は非表示 */
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            width: 90%;
+            max-width: 1000px;
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        #modal-video {
+            width: 100%;
+            display: block;
+        }
+
+        /* 閉じるボタン */
+        .close-btn {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+        .close-btn:hover {
+            color: var(--accent-color);
+        }
+
+        /* 異界モード演出 */
         body.unsung-mode .video-container {
-            border-color: var(--accent-color);
+            border-color: var(--accent-color, #8e44ad);
             box-shadow: 0 10px 30px rgba(142, 68, 173, 0.3);
         }
-
-        body.unsung-mode .video-placeholder {
-            background: linear-gradient(45deg, #000, #1a0033);
-            color: var(--accent-color);
-        }
-
-        body.unsung-mode .movie-title {
-            color: var(--accent-color);
-        }
+        body.unsung-mode .movie-title { color: var(--accent-color, #9b59b6); }
+        body.unsung-mode .modal-content { border: 2px solid var(--accent-color); }
+        body.unsung-mode .play-overlay { background: rgba(142, 68, 173, 0.8); }
+        body.unsung-mode .play-overlay::after { border-left-color: #fff; }
 
         @media (max-width: 600px) {
             .movie-grid { gap: 30px; }
+            .close-btn { top: 10px; right: 10px; background: rgba(0,0,0,0.5); border-radius: 50%; width: 40px; height: 40px; font-size: 24px; }
         }
     </style>
 </head>
@@ -109,75 +181,42 @@
         <h2 class="tape-header">Campaign Movies</h2>
         
         <div class="movie-grid">
-            <!-- 動画アイテム 1 -->
+            <!-- ① ゆるデュオ△6 -->
             <div class="movie-item">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        [Movie File Placeholder]
-                    </div>
+                <div class="video-container" onclick="openModal('04_assets/Movie/ゆるデュオ△6 ～PV～「さぁ、お話をしよう」.mp4')">
+                    <video muted preload="metadata">
+                        <source src="04_assets/Movie/ゆるデュオ△6 ～PV～「さぁ、お話をしよう」.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-overlay"></div>
                 </div>
                 <div class="movie-title">
-                    公式PV：第1話「かどでのほしぞら」
+                    ゆるデュオ△6 ～PV～「さぁ、お話をしよう」
                 </div>
             </div>
 
-            <!-- 動画アイテム 2 -->
+            <!-- ② ゆるデュオ△2 -->
             <div class="movie-item">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        [Movie File Placeholder]
-                    </div>
+                <div class="video-container" onclick="openModal('04_assets/Movie/ゆるデュオ△2 ～Mv～「ここにも、春が来ましたよ！」_compressed.mp4')">
+                    <video muted preload="metadata">
+                        <source src="04_assets/Movie/ゆるデュオ△2 ～Mv～「ここにも、春が来ましたよ！」_compressed.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-overlay"></div>
                 </div>
                 <div class="movie-title">
-                    公式PV：第2話「いのち の いずる くに」
+                    ゆるデュオ△2 ～Mv～「ここにも、春が来ましたよ！」
                 </div>
             </div>
 
-            <!-- 動画アイテム 3 -->
+            <!-- ③ ロールシャッハシンドローム -->
             <div class="movie-item">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        [Movie File Placeholder]
-                    </div>
+                <div class="video-container" onclick="openModal('04_assets/Movie/【ロールシャッハシンドローム なでこ×マコト PV】.mp4')">
+                    <video muted preload="metadata">
+                        <source src="04_assets/Movie/【ロールシャッハシンドローム なでこ×マコト PV】.mp4" type="video/mp4">
+                    </video>
+                    <div class="play-overlay"></div>
                 </div>
                 <div class="movie-title">
-                    公式PV：第6話「こころ の かたち とう きょう」
-                </div>
-            </div>
-
-            <!-- 動画アイテム 4 -->
-            <div class="movie-item">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        [Movie File Placeholder]
-                    </div>
-                </div>
-                <div class="movie-title">
-                    キャンペーン総集編：マコトとなでこの軌跡
-                </div>
-            </div>
-
-            <!-- 動画アイテム 5 -->
-            <div class="movie-item">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        [Movie File Placeholder]
-                    </div>
-                </div>
-                <div class="movie-title">
-                    番外編：マコなでinしないと出られない部屋
-                </div>
-            </div>
-
-            <!-- 動画アイテム 6 -->
-            <div class="movie-item">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        [Movie File Placeholder]
-                    </div>
-                </div>
-                <div class="movie-title">
-                    次回予告：第7話「その みちしるべ に すすんで」
+                    【ロールシャッハシンドローム なでこ×マコト PV】
                 </div>
             </div>
         </div>
@@ -187,17 +226,58 @@
         <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
     </footer>
 
+    <!-- 動画拡大用モーダル -->
+    <div id="video-modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <video id="modal-video" controls autoplay>
+                <source src="" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
     <!-- 異界化ボタン -->
-    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
+    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()" style="position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; border: none; background: var(--accent-color, #e67e22); color: white; cursor: pointer; z-index: 1000; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;">
         <span id="toggle-icon">△</span>
     </button>
 
     <script>
+        // モーダル操作用
+        const modal = document.getElementById('video-modal');
+        const modalVideo = document.getElementById('modal-video');
+
+        function openModal(src) {
+            modalVideo.src = src;
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // 背後のスクロールを禁止
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            modalVideo.pause(); // 閉じるときに動画を止める
+            modalVideo.src = ""; // ソースをクリア
+            document.body.style.overflow = 'auto';
+        }
+
+        // モード切替
         function toggleMode() {
             const isUnsung = document.body.classList.toggle('unsung-mode');
             const icon = document.getElementById('toggle-icon');
             icon.innerText = isUnsung ? '●' : '△';
+            
+            if (isUnsung) {
+                document.documentElement.style.setProperty('--accent-color', '#9b59b6');
+                document.documentElement.style.setProperty('--card-bg', '#2a004d');
+            } else {
+                document.documentElement.style.setProperty('--accent-color', '#e67e22');
+                document.documentElement.style.setProperty('--card-bg', '#fff');
+            }
         }
+
+        // ESCキーでモーダルを閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
     </script>
 </body>
 </html>
