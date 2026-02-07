@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEWS - ゆるデュオ△</title>
+    <!-- 共通CSSの読み込み -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- NEWSページ固有のスタイル --- */
+        
+        .news-timeline {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .news-entry {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .news-date-tag {
+            flex-shrink: 0;
+            width: 120px;
+            text-align: right;
+            padding-top: 5px;
+        }
+
+        .news-date {
+            font-weight: bold;
+            color: var(--accent-color);
+            display: block;
+            font-size: 1.1rem;
+        }
+
+        .news-category {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: var(--sub-accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .news-body {
+            flex-grow: 1;
+        }
+
+        .news-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            border-bottom: 2px dashed rgba(var(--accent-color), 0.2);
+            padding-bottom: 5px;
+            transition: color 0.3s;
+        }
+
+        .news-entry:hover .news-title {
+            color: var(--accent-color);
+        }
+
+        .news-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+
+        /* 異界モード演出 */
+        body.unsung-mode .news-date {
+            color: var(--accent-color);
+        }
+        
+        body.unsung-mode .news-category {
+            background: var(--sub-accent);
+        }
+
+        @media (max-width: 600px) {
+            .news-entry {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .news-date-tag {
+                width: 100%;
+                text-align: left;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .news-category {
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header container">
+        <h1 class="logo-title">ゆるデュオ△</h1>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item">Top</a>
+            <a href="news.html" class="nav-item active">News</a>
+            <a href="story.html" class="nav-item">Story</a>
+            <a href="character.html" class="nav-item">Character</a>
+            <a href="world.html" class="nav-item">World</a>
+            <a href="movie.html" class="nav-item">Movie</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2 class="tape-header">News & Updates</h2>
+        
+        <div class="news-timeline">
+            <!-- ニュース項目 1 -->
+            <div class="card news-card">
+                <div class="news-entry">
+                    <div class="news-date-tag">
+                        <span class="news-date">2026.02.22</span>
+                        <span class="news-category">INFO</span>
+                    </div>
+                    <div class="news-body">
+                        <div class="news-title">公式ポータルサイトをオープンしました</div>
+                        <p class="news-text">
+                            TRPGキャンペーン「ゆるデュオ△」の記録をまとめる公式ポータルサイトを公開しました。各話のログやキャラクター設定などを順次更新予定です。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ニュース項目 2 -->
+            <div class="card news-card">
+                <div class="news-entry">
+                    <div class="news-date-tag">
+                        <span class="news-date">2026.01.17</span>
+                        <span class="news-category">SESSION</span>
+                    </div>
+                    <div class="news-body">
+                        <div class="news-title">第7話「その みちしるべ に すすんで」を開始しました</div>
+                        <p class="news-text">
+                            最新シナリオのセッションがスタート。二人の旅は新たな局面を迎えます。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ニュース項目 3 -->
+            <div class="card news-card">
+                <div class="news-entry">
+                    <div class="news-date-tag">
+                        <span class="news-date">2025.12.01</span>
+                        <span class="news-category">LOG</span>
+                    </div>
+                    <div class="news-body">
+                        <div class="news-title">第6話「こころ の かたち とう きょう」をクリアしました</div>
+                        <p class="news-text">
+                            第6話のセッションが終了しました。ストーリーページに概要を掲載しています。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ニュース項目 4 (サンプル) -->
+            <div class="card news-card">
+                <div class="news-entry">
+                    <div class="news-date-tag">
+                        <span class="news-date">2025.11.15</span>
+                        <span class="news-category">INFO</span>
+                    </div>
+                    <div class="news-body">
+                        <div class="news-title">世界観ページ（WORLD）を更新</div>
+                        <p class="news-text">
+                            アンサング・デュエットの用語解説と、これまでの旅路を記録したマップを追加しました。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
+    </footer>
+
+    <!-- 異界化ボタン -->
+    <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
+        <span id="toggle-icon">△</span>
+    </button>
+
+    <script>
+        function toggleMode() {
+            const isUnsung = document.body.classList.toggle('unsung-mode');
+            const icon = document.getElementById('toggle-icon');
+            icon.innerText = isUnsung ? '●' : '△';
+        }
+    </script>
+</body>
+</html>
