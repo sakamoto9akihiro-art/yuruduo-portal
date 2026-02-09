@@ -4,91 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHARACTER - ゆるデュオ△</title>
-    <!-- 共通CSSの読み込み -->
-    <link rel="stylesheet" href="style.css">
+    <!-- 共通CSSは既存のものを想定 -->
     <style>
+        :root {
+            --accent-color: #e67e22;
+            --card-bg: #ffffff;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         /* --- CHARACTERページ固有のスタイル --- */
         .char-main {
             position: relative;
-            min-height: 700px;
+            min-height: 85vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding-top: 20px;
+            justify-content: flex-start;
+            padding-top: 40px;
         }
 
         /* 背景の巨大縦書きテキスト */
         .bg-vertical-text {
             position: absolute;
-            left: 10%;
+            left: 5%;
             top: 50%;
             transform: translateY(-50%);
-            font-size: clamp(4rem, 15vw, 8rem);
+            font-size: clamp(4rem, 12vw, 8rem);
             font-weight: bold;
             color: var(--accent-color);
-            opacity: 0.1;
+            opacity: 0.08;
             writing-mode: vertical-rl;
             z-index: 0;
             pointer-events: none;
-            transition: color var(--transition-speed), opacity 0.5s;
+            transition: opacity 0.5s;
         }
 
-        /* 中央のキャラクター表示エリア */
+        /* キャラクター表示エリア */
         .char-display-area {
             position: relative;
             z-index: 5;
             width: 100%;
-            max-width: 600px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            margin-bottom: 30px;
         }
 
         .char-main-visual {
-            max-height: 75vh;
+            height: 65vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             filter: drop-shadow(0 15px 30px rgba(0,0,0,0.1));
-            transition: filter var(--transition-speed), transform 0.5s;
+            transition: transform 0.5s;
         }
 
         .char-main-visual img {
-            height: 100%;
+            max-height: 100%;
             width: auto;
-            max-width: 100%;
-            display: block;
+            object-fit: contain;
+            transition: opacity 0.3s ease-in-out;
         }
 
-        /* 異界モード時のキャラクター演出 */
-        body.unsung-mode .char-main-visual {
-            filter: grayscale(0.6) contrast(1.3) brightness(0.7) hue-rotate(180deg);
-            transform: scale(1.02);
-        }
-
-        /* 表情アイコン bubble */
-        .expression-bubble {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 6px solid var(--accent-color);
-            background: white;
-            overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-            transition: border-color var(--transition-speed), transform 0.3s;
+        /* 差分切り替えドットボタン */
+        .variant-selector {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
             z-index: 10;
         }
-        
-        .expression-bubble img { width: 100%; height: 100%; object-fit: cover; }
 
-        .bubble-1 { top: 0; left: -10%; animation: floating 5s ease-in-out infinite; }
-        .bubble-2 { bottom: 15%; left: -5%; animation: floating 4s ease-in-out infinite 1s; }
-        .bubble-3 { bottom: 10%; right: -5%; animation: floating 6s ease-in-out infinite 0.5s; }
+        .dot-btn {
+            width: 16px;
+            height: 16px;
+            background: #ccc;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.3s;
+        }
 
-        /* サイドセレクター */
+        .dot-btn.active {
+            background: var(--accent-color);
+            transform: scale(1.3);
+            box-shadow: 0 0 8px var(--accent-color);
+        }
+
+        /* サイドセレクター（キャラ切り替え） */
         .char-selector-side {
             position: absolute;
-            right: 0;
-            top: 100px;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -96,21 +118,19 @@
         }
 
         .selector-thumb {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            border: 3px solid transparent;
+            border: 3px solid #ddd;
             cursor: pointer;
             overflow: hidden;
             background: var(--card-bg);
             transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .selector-thumb.active {
             border-color: var(--accent-color);
             transform: scale(1.1);
-            box-shadow: 0 0 15px var(--accent-color);
         }
 
         .selector-thumb img { width: 100%; height: 100%; object-fit: cover; }
@@ -118,49 +138,78 @@
         /* ナビゲーション矢印 */
         .nav-arrow {
             position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 4rem;
+            top: 40%;
+            font-size: 3rem;
             color: var(--accent-color);
             cursor: pointer;
-            opacity: 0.3;
-            transition: opacity 0.3s, color var(--transition-speed);
+            opacity: 0.4;
+            transition: opacity 0.3s;
             z-index: 30;
             user-select: none;
         }
         .nav-arrow:hover { opacity: 1; }
-        .arrow-prev { left: -40px; }
-        .arrow-next { right: 80px; }
+        .arrow-prev { left: 40px; }
+        .arrow-next { right: 100px; }
 
         /* 紹介文カード */
         .char-info-card {
-            max-width: 650px;
-            margin: 40px auto;
-            position: relative;
+            max-width: 600px;
+            width: 90%;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
             z-index: 10;
         }
 
         .char-name-ruby {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             font-weight: bold;
             letter-spacing: 0.2rem;
-            opacity: 0.7;
+            opacity: 0.6;
             margin-bottom: 5px;
         }
 
         .char-real-name {
             font-size: 2rem;
             color: var(--accent-color);
-            margin-bottom: 15px;
-            transition: color var(--transition-speed);
+            margin: 0 0 15px 0;
         }
 
-        @media (max-width: 850px) {
-            .arrow-next { right: 0; }
-            .char-selector-side { top: auto; bottom: -80px; flex-direction: row; right: auto; left: 50%; transform: translateX(-50%); }
-            .bg-vertical-text { display: none; }
-            .expression-bubble { width: 80px; height: 80px; }
+        .char-desc {
+            line-height: 1.8;
+            font-size: 0.95rem;
+            text-align: left;
         }
+
+        /* 異界モード演出 */
+        body.unsung-mode .char-main-visual {
+            filter: grayscale(0.6) contrast(1.2) brightness(0.8) hue-rotate(180deg);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 850px) {
+            .char-selector-side {
+                position: static;
+                transform: none;
+                flex-direction: row;
+                justify-content: center;
+                margin-top: 30px;
+                order: 3;
+            }
+            .arrow-prev { left: 10px; }
+            .arrow-next { right: 10px; }
+            .bg-vertical-text { display: none; }
+            .char-main-visual { height: 45vh; }
+        }
+
+        /* ヘッダー/フッター簡易スタイル */
+        .site-header { padding: 20px 0; text-align: center; }
+        .main-nav { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
+        .nav-item { text-decoration: none; color: #666; font-weight: bold; }
+        .nav-item.active { color: var(--accent-color); }
+        .mode-toggle { position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; border-radius: 50%; border: none; background: var(--accent-color); color: white; cursor: pointer; z-index: 100; font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -168,12 +217,11 @@
     <header class="site-header container">
         <h1 class="logo-title">ゆるデュオ△</h1>
         <nav class="main-nav">
-            <a href="index.html" class="nav-item">Top</a>
-            <a href="news.html" class="nav-item">News</a>
-            <a href="story.html" class="nav-item">Story</a>
-            <a href="character.html" class="nav-item active">Character</a>
-            <a href="world.html" class="nav-item">World</a>
-            <a href="movie.html" class="nav-item">Movie</a>
+            <a href="#" class="nav-item">Top</a>
+            <a href="#" class="nav-item">News</a>
+            <a href="#" class="nav-item">Story</a>
+            <a href="#" class="nav-item active">Character</a>
+            <a href="#" class="nav-item">World</a>
         </nav>
     </header>
 
@@ -181,39 +229,39 @@
         <!-- 背景テキスト -->
         <div id="char-bg-name" class="bg-vertical-text">蛇場見マコト</div>
 
-        <!-- 矢印ナビ -->
+        <!-- 左右矢印 -->
         <div class="nav-arrow arrow-prev" onclick="prevChar()">＜</div>
         <div class="nav-arrow arrow-next" onclick="nextChar()">＞</div>
 
-        <!-- キャラセレクター -->
-        <div class="char-selector-side" id="char-selector">
-            <!-- JSで生成 -->
-        </div>
-
-        <!-- キャラクター表示本体 -->
+        <!-- キャラクタ表示エリア -->
         <div class="char-display-area">
-            <div class="expression-bubble bubble-1" id="exp-1"><img src="" alt=""></div>
-            <div class="expression-bubble bubble-2" id="exp-2"><img src="" alt=""></div>
-            <div class="expression-bubble bubble-3" id="exp-3"><img src="" alt=""></div>
-            
             <div class="char-main-visual" id="char-visual">
                 <img src="" alt="立ち絵" id="main-img">
+            </div>
+            
+            <!-- 立ち絵差分切り替えドット -->
+            <div class="variant-selector" id="variant-selector">
+                <!-- JSで生成 -->
             </div>
         </div>
 
         <!-- 紹介文 -->
-        <section class="char-info-card card">
+        <section class="char-info-card">
             <div class="char-name-ruby" id="char-ruby">MAKOTO JABAMI</div>
             <h2 class="char-real-name" id="char-name">蛇場見 マコト</h2>
-            <p id="char-desc">キャラクターの説明がここに入ります。</p>
+            <p class="char-desc" id="char-desc">キャラクターの説明文がここに入ります。</p>
         </section>
+
+        <!-- キャラセレクター（アイコン） -->
+        <div class="char-selector-side" id="char-selector">
+            <!-- JSで生成 -->
+        </div>
     </main>
 
-    <footer class="main-footer">
-        <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
+    <footer style="text-align: center; padding: 40px 0; opacity: 0.5; font-size: 0.8rem;">
+        &copy; ゆるデュオ△ 制作委員会
     </footer>
 
-    <!-- 異界化ボタン -->
     <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
         <span id="toggle-icon">△</span>
     </button>
@@ -225,44 +273,49 @@
                 ruby: "MAKOTO JABAMI",
                 bgName: "蛇場見マコト",
                 desc: "本キャンペーンの主人公（バインダー）。なでことの約束である「キャンプ」を心待ちにしている女子高生。過去の事故をきっかけに異界に惹かれやすい体質となってしまった。しっかり者に見えて、なでこの前では年相応の顔を見せる。",
-                mainImg: "https://lh3.googleusercontent.com/u/0/d/1R7xEalrDGGUiF_-RRB7UkNrkWr3J769m",
-                expressions: [
-                    "https://placehold.jp/24/e67e22/ffffff/200x200.png?text=通常",
-                    "https://placehold.jp/24/e67e22/ffffff/200x200.png?text=笑顔",
-                    "https://placehold.jp/24/e67e22/ffffff/200x200.png?text=困り顔"
-                ]
+                // 立ち絵差分（最大3枚）
+                variants: [
+                    "https://lh3.googleusercontent.com/u/0/d/1R7xEalrDGGUiF_-RRB7UkNrkWr3J769m", // 通常
+                    "https://placehold.jp/60/e67e22/ffffff/500x800.png?text=マコト：笑顔", 
+                    "https://placehold.jp/60/e67e22/ffffff/500x800.png?text=マコト：困り顔"
+                ],
+                thumb: "https://placehold.jp/24/e67e22/ffffff/200x200.png?text=マコト"
             },
             {
                 name: "川根 なでこ",
                 ruby: "NADEKO KAWANE",
                 bgName: "川根なでこ",
                 desc: "マコトのパートナー（シフター）。明るく天真爛漫な性格で、マコトを外の世界へ、そしてキャンプへと連れ出した。彼女の存在がマコトにとっての「日常」の象徴であり、異界からの帰還を支える光となっている。",
-                mainImg: "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=川根なでこ立ち絵",
-                expressions: [
-                    "https://placehold.jp/24/f39c12/ffffff/200x200.png?text=元気",
-                    "https://placehold.jp/24/f39c12/ffffff/200x200.png?text=驚き",
-                    "https://placehold.jp/24/f39c12/ffffff/200x200.png?text=照れ"
-                ]
+                variants: [
+                    "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=なでこ：通常",
+                    "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=なでこ：驚き",
+                    "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=なでこ：照れ"
+                ],
+                thumb: "https://placehold.jp/24/f39c12/ffffff/200x200.png?text=なでこ"
             },
             {
                 name: "ユーリ先生",
                 ruby: "YURI-SENSEI",
                 bgName: "ユーリ",
                 desc: "マコトたちの学校の顧問。時に厳しく、時に優しく二人を見守る大人。彼女の別荘がある清里への旅行が、物語の新たな転換点となった。異界についても何か知っている節がある……？",
-                mainImg: "https://placehold.jp/60/8e44ad/ffffff/500x800.png?text=NPC立ち絵",
-                expressions: [
-                    "https://placehold.jp/24/8e44ad/ffffff/200x200.png?text=微笑",
-                    "https://placehold.jp/24/8e44ad/ffffff/200x200.png?text=考え事",
-                    "https://placehold.jp/24/8e44ad/ffffff/200x200.png?text=厳格"
-                ]
+                variants: [
+                    "https://placehold.jp/60/8e44ad/ffffff/500x800.png?text=ユーリ：通常",
+                    "https://placehold.jp/60/8e44ad/ffffff/500x800.png?text=ユーリ：微笑",
+                    "https://placehold.jp/60/8e44ad/ffffff/500x800.png?text=ユーリ：厳格"
+                ],
+                thumb: "https://placehold.jp/24/8e44ad/ffffff/200x200.png?text=ユーリ"
             }
         ];
 
-        let currentIndex = 0;
+        let currentCharIndex = 0;
+        let currentVariantIndex = 0;
 
+        // キャラクター更新
         function updateCharacter(index) {
-            currentIndex = index;
-            const char = characters[currentIndex];
+            currentCharIndex = index;
+            currentVariantIndex = 0; // キャラを変えたら最初の差分に戻す
+            
+            const char = characters[currentCharIndex];
             
             // テキスト更新
             document.getElementById('char-name').innerText = char.name;
@@ -270,13 +323,13 @@
             document.getElementById('char-bg-name').innerText = char.bgName;
             document.getElementById('char-desc').innerText = char.desc;
             
-            // 画像更新
-            document.getElementById('main-img').src = char.mainImg;
-            document.getElementById('exp-1').querySelector('img').src = char.expressions[0];
-            document.getElementById('exp-2').querySelector('img').src = char.expressions[1];
-            document.getElementById('exp-3').querySelector('img').src = char.expressions[2];
+            // ドットボタンの生成
+            renderVariantDots(char.variants);
             
-            // セレクターのactive管理
+            // 画像表示
+            setVariant(0);
+            
+            // キャラクターセレクターのactive管理
             const thumbs = document.querySelectorAll('.selector-thumb');
             thumbs.forEach((t, i) => {
                 if(i === index) t.classList.add('active');
@@ -284,13 +337,49 @@
             });
         }
 
+        // 差分切り替え
+        function setVariant(vIndex) {
+            currentVariantIndex = vIndex;
+            const char = characters[currentCharIndex];
+            const img = document.getElementById('main-img');
+            
+            // フェードアウト
+            img.style.opacity = 0;
+            
+            setTimeout(() => {
+                img.src = char.variants[vIndex];
+                img.style.opacity = 1;
+                
+                // ドットのactive管理
+                const dots = document.querySelectorAll('.dot-btn');
+                dots.forEach((d, i) => {
+                    if(i === vIndex) d.classList.add('active');
+                    else d.classList.remove('active');
+                });
+            }, 150);
+        }
+
+        // 差分切り替え用ドットのレンダリング
+        function renderVariantDots(variants) {
+            const container = document.getElementById('variant-selector');
+            container.innerHTML = '';
+            
+            variants.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'dot-btn' + (i === 0 ? ' active' : '');
+                dot.onclick = () => setVariant(i);
+                dot.title = `差分 ${i+1}`;
+                container.appendChild(dot);
+            });
+        }
+
         function nextChar() {
-            let next = (currentIndex + 1) % characters.length;
+            let next = (currentCharIndex + 1) % characters.length;
             updateCharacter(next);
         }
 
         function prevChar() {
-            let prev = (currentIndex - 1 + characters.length) % characters.length;
+            let prev = (currentCharIndex - 1 + characters.length) % characters.length;
             updateCharacter(prev);
         }
 
@@ -301,12 +390,13 @@
                 const thumb = document.createElement('div');
                 thumb.className = 'selector-thumb' + (i === 0 ? ' active' : '');
                 thumb.onclick = () => updateCharacter(i);
-                thumb.innerHTML = `<img src="${char.expressions[0]}" alt="${char.name}">`;
+                thumb.innerHTML = `<img src="${char.thumb}" alt="${char.name}">`;
                 selector.appendChild(thumb);
             });
             updateCharacter(0);
         };
 
+        // 異界化モード切り替え
         function toggleMode() {
             const isUnsung = document.body.classList.toggle('unsung-mode');
             const icon = document.getElementById('toggle-icon');
