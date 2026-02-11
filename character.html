@@ -10,7 +10,7 @@
         /* --- CHARACTERページ固有のスタイル --- */
         .char-main {
             position: relative;
-            min-height: 900px;
+            min-height: 950px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -33,28 +33,32 @@
             transition: color var(--transition-speed), opacity 0.5s;
         }
 
-        /* --- キャラクター選択エリア（ナビと画像の間に配置） --- */
+        /* --- キャラクター選択エリア --- */
         .char-selector-horizontal {
             width: 100%;
-            max-width: 900px;
-            margin: 10px 0 30px;
+            max-width: 950px;
+            margin: 10px 0 20px;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 12px;
-            padding: 10px;
+            padding: 15px;
             overflow-x: auto;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) transparent;
             z-index: 20;
         }
 
         .char-selector-horizontal::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
+            height: 4px;
+        }
+        .char-selector-horizontal::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
         }
 
         .selector-thumb {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             border: 3px solid transparent;
             cursor: pointer;
@@ -89,7 +93,7 @@
         }
 
         .char-main-visual {
-            height: 60vh;
+            height: 55vh;
             min-height: 400px;
             display: flex;
             align-items: flex-end;
@@ -170,6 +174,10 @@
             z-index: 10;
         }
 
+        .char-info-card {
+            min-height: 200px;
+        }
+
         .char-name-title {
             font-size: 1.8rem;
             color: var(--accent-color);
@@ -190,13 +198,13 @@
             margin-bottom: 2px;
         }
 
+        #char-desc {
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+
         @media (max-width: 900px) {
             .nav-arrow { display: none; }
-            .char-selector-horizontal {
-                justify-content: flex-start;
-                padding-left: 20px;
-                padding-right: 20px;
-            }
             .bg-vertical-text { display: none; }
         }
     </style>
@@ -216,7 +224,7 @@
     </header>
 
     <main class="container char-main">
-        <!-- キャラクター選択リスト（横並び） -->
+        <!-- キャラクター選択リスト -->
         <div class="char-selector-horizontal" id="char-selector">
             <!-- JavaScriptで動的生成 -->
         </div>
@@ -267,9 +275,9 @@
                 bgName: "蛇場見マコト",
                 desc: "我らが主人公。7歳の時の事故で脳以外の全てを失うが、なでこから体を譲り受け奇跡の生還を遂げた。異界では大切な人を現実へ繋ぎ止める「バインダー」の役割を担う。明るく優しい性格だが、なでこが危険な目にあった時は怒りをあらわにすることも。",
                 images: [
-                    "https://lh3.googleusercontent.com/u/0/d/1R7xEalrDGGUiF_-RRB7UkNrkWr3J769m", 
-                    "https://placehold.jp/60/e67e22/ffffff/500x800.png?text=マコト（笑顔）", 
-                    "https://placehold.jp/60/e67e22/ffffff/500x800.png?text=マコト（怒り）"
+                    "04_assets/Character/makoto/makoto1.png", 
+                    "04_assets/Character/makoto/makoto2.png", 
+                    "04_assets/Character/makoto/makoto3.png"
                 ]
             },
             {
@@ -278,9 +286,9 @@
                 bgName: "川根なでこ",
                 desc: "マコトを救うために自らの体を差し出し、現在は機械の体で生活を送る高校3年生。外クルに所属するキャンプの達人で、料理の腕前もプロ級。異界の真の姿を視る「シフター」としての適性を持ち、マコトを喜ばせるためのサプライズ満載な旅の計画を立てるのが大好き。",
                 images: [
-                    "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=なでこ（通常）", 
-                    "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=なでこ（元気）", 
-                    "https://placehold.jp/60/f39c12/ffffff/500x800.png?text=なでこ（真剣）"
+                    "04_assets/Character/nadeko/なでこ立ち絵_お守り.png", 
+                    "04_assets/Character/nadeko/なでこ立ち絵にっこり_お守り.png", 
+                    "04_assets/Character/nadeko/なでこ立ち絵ピンチ_お守り.png"
                 ]
             },
             {
@@ -289,8 +297,7 @@
                 bgName: "蛇場見ユーリ",
                 desc: "マコトの父親で、なでこと取引をして彼女の体をマコトに適合させた脳外科医。娘を溺愛する「マコトちゃん甘やかし隊」の隊長で、マコトとなでこの旅を陰ながら支えている。趣味は登山とジョジョの解説動画の視聴および自身での動画投稿。異界や魔術に対して警戒心を持ちつつ、マコトたちの成長を温かく見守っている。",
                 images: [
-                    "https://placehold.jp/60/5d4037/ffffff/500x800.png?text=ユーリ（通常）", 
-                    "https://placehold.jp/60/5d4037/ffffff/500x800.png?text=ユーリ（笑顔）"
+                    "04_assets/Character/yuri/yuri01.png"
                 ]
             },
             {
@@ -298,63 +305,75 @@
                 ruby: "EVIE D. MANCHESTER",
                 bgName: "エヴィ",
                 desc: "イングランドの名門魔術師の家系に生まれた、マコトと同い年の10歳の魔術師。清里での出会いを通じてマコトとなでこと親友になり、今では日本語で日常会話ができるほど勉強熱心。三人の「お揃いのストール」を宝物にしており、マコトたちとの時間を何よりも大切にしている。",
-                images: ["https://placehold.jp/60/8e44ad/ffffff/500x800.png?text=エヴィ（通常）", "https://placehold.jp/60/8e44ad/ffffff/500x800.png?text=エヴィ（照れ）"]
+                images: [
+                    "04_assets/Character/evi/evi01.png", 
+                    "04_assets/Character/evi/evi02.png", 
+                    "04_assets/Character/evi/evi03.png"
+                ]
             },
             {
                 name: "蛇崩 あかり",
                 ruby: "JAKUZURE AKARI",
                 bgName: "蛇崩あかり",
                 desc: "伊豆の異界で出会った、「体を譲ってもらえなかった未来」のもう一人のマコト。かつては異界に囚われていたが、なでことマコトの手により念願の花見を叶えて救われた。現在は「桜の枝」にその魂を宿しており、二人と一緒に過ごしている。",
-                images: ["https://placehold.jp/60/e74c3c/ffffff/500x800.png?text=あかり（通常）", "https://placehold.jp/60/e74c3c/ffffff/500x800.png?text=あかり（微笑）"]
+                images: [
+                    "04_assets/Character/akari/akari01.png", 
+                    "04_assets/Character/akari/akari04.png", 
+                    "04_assets/Character/akari/akari03.png"
+                ]
             },
             {
                 name: "名護 あわも",
                 ruby: "NAGO AWAMO",
                 bgName: "名護あわも",
                 desc: "ヴェネツィアで出会った沖縄出身の少女。実家は沖縄でキャンプ場を経営しており、両親の過保護な観光プランから逃げ出した先でマコトたちと知り合った。なでこが見せたシャボン玉のマジックに感動し、今度は地元の沖縄へ二人を招待することを約束した新しい友達。",
-                images: ["https://placehold.jp/60/3498db/ffffff/500x800.png?text=あわも（通常）", "https://placehold.jp/60/3498db/ffffff/500x800.png?text=あわも（笑顔）"]
+                images: [
+                    "04_assets/Character/awamo/awamo01.png", 
+                    "04_assets/Character/awamo/awamo02.png", 
+                    "04_assets/Character/awamo/awamo03.png"
+                ]
             },
             {
                 name: "口坂本 麻利絵",
                 ruby: "KUCHISAKAMOTO MARIE",
                 bgName: "口坂本麻利絵",
                 desc: "三日月財団日本支部に所属する、ふんわりとした長い金髪がトレードマークの関西弁女性。異界の調査や保護を任務としており、右も左もわからなかったマコトたちにバインダーやシフターの知識を授けたガイド役。有能なスタッフとして、財団に舞い込む異界の謎に日々立ち向かっている。",
-                images: ["https://placehold.jp/60/f1c40f/ffffff/500x800.png?text=麻利絵"]
+                images: ["04_assets/Character/marie/marie01.png"]
             },
             {
                 name: "富士宮 梅子",
                 ruby: "FUJINOMIYA UMEKO",
                 bgName: "富士宮梅子",
                 desc: "三日月財団日本支部のエージェントで、麻利絵の相棒。仕事は非常に優秀だが、重度の「幼女好き」という危うい一面を持ち、マコトたちの交流を物陰から「はすはす」しながら見守るのが日課。財団の利益以上にマコトたちの味方であることを公言し、24時間体制で相談を受け付ける熱意を持つ。",
-                images: ["https://placehold.jp/60/2ecc71/ffffff/500x800.png?text=梅子"]
+                images: ["04_assets/Character/umeko/umeko01.png"]
             },
             {
                 name: "島田 リン",
                 ruby: "SHIMADA RIN",
                 bgName: "島田リン",
                 desc: "原付バイクで各地を旅する、なでこの親友のソロキャンパー。クールな性格だが、マコトと出会って以降、様子の変わったなでこのことを気にかけている。マコトとなでこの関係を温かく見守っている。",
-                images: ["https://placehold.jp/60/34495e/ffffff/500x800.png?text=リン"]
+                images: ["04_assets/Character/shimadarin/rin01.png"]
             },
             {
                 name: "斎藤 ゆい",
                 ruby: "SAITO YUI",
                 bgName: "斎藤ゆい",
                 desc: "なでこたちの友人で、自由奔放な性格。外クルの部員ではないが活動には頻繁に顔を出し、マコトとなでこが瓜二つであることを「クローンの実験体」などと言って面白がっている。",
-                images: ["https://placehold.jp/60/bdc3c7/ffffff/500x800.png?text=ゆい"]
+                images: ["04_assets/Character/saitoyui/yui01.png"]
             },
             {
                 name: "清水 葵",
                 ruby: "SHIMIZU AOI",
                 bgName: "清水葵",
                 desc: "なでこが所属するアウトドアの部活「外クル」の部員で、おっとりした関西弁が特徴の少女。なでこの変化を敏感に察しており、マコトとの絆を「実質家族」として祝福している。",
-                images: ["https://placehold.jp/60/1abc9c/ffffff/500x800.png?text=葵"]
+                images: ["04_assets/Character/shimizuaoi/aoi01.png"]
             },
             {
                 name: "磐田 千明",
                 ruby: "IWATA CHIAKI",
                 bgName: "磐田千明",
                 desc: "アウトドアの部活「外クル」の部長を務める、元気いっぱいで行動力あふれる少女。マコトのノリの良さを気に入り、将来のエース部員として熱烈に勧誘している。部全体を引っ張る頼もしいリーダー。",
-                images: ["https://placehold.jp/60/d35400/ffffff/500x800.png?text=千明"]
+                images: ["04_assets/Character/iwatachiaki/chiaki01.png"]
             }
         ];
 
