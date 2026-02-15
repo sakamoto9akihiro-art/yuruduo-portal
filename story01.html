@@ -7,95 +7,167 @@
     <!-- 共通CSSの読み込み -->
     <link rel="stylesheet" href="style.css">
     <style>
-        /* --- STORY詳細ページ固有のスタイル --- */
-
-        /* 上部ギャラリーエリア */
-        .story-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-bottom: 40px;
+        /* --- STORY詳細 独自スタイル --- */
+        
+        /* 裏話ボタン（左上固定） */
+        .urabana-trigger-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .urabana-trigger-btn:hover {
+            transform: scale(1.1) rotate(-5deg);
+            background: var(--sub-accent);
         }
 
-        .gallery-item {
-            aspect-ratio: 16 / 9;
-            background: #ddd;
+        /* カルーセルエリア */
+        .carousel-section {
+            padding: 60px 0;
+            overflow: hidden;
+            background: rgba(0,0,0,0.02);
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .carousel-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            perspective: 1000px;
+        }
+        .carousel-item {
+            width: 220px;
+            aspect-ratio: 16/9;
             border-radius: 12px;
             overflow: hidden;
-            border: 5px solid white;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            border: 4px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            opacity: 0.5;
+            transform: scale(0.8) rotateY(10deg);
         }
-
-        .gallery-item:hover {
-            transform: scale(1.02);
+        .carousel-item.active {
+            width: clamp(300px, 60vw, 550px);
+            opacity: 1;
+            transform: scale(1) rotateY(0deg);
+            z-index: 10;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            border-width: 6px;
         }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* コンテンツ切り替え表示 */
+        .normal-only { display: block; }
+        .unsung-only { display: none; }
+        body.unsung-mode .normal-only { display: none; }
+        body.unsung-mode .unsung-only { display: block; }
 
-        /* 詳細情報グリッド */
-        .story-details-grid {
+        /* スポット紹介 */
+        .spot-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 25px;
-            margin-top: 40px;
+            margin-top: 30px;
         }
-
-        .detail-block h3 {
-            font-size: 1.1rem;
-            color: var(--accent-color);
-            margin-bottom: 15px;
-            border-bottom: 2px dashed var(--accent-color);
-            padding-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* ミニキャラクターカード */
-        .mini-char-list {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .mini-char-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(var(--accent-color), 0.1);
-            padding: 5px 15px;
-            border-radius: 30px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .mini-char-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            overflow: hidden;
-        }
-
-        .mini-char-icon img {
+        .spot-image {
             width: 100%;
-            height: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
             object-fit: cover;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0,0,0,0.1);
+            cursor: zoom-in;
+            transition: transform 0.3s;
+        }
+        .spot-image:hover { transform: scale(1.02); }
+
+        /* オーバーレイ（画像拡大） */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;
+            cursor: zoom-out;
+        }
+        .overlay img { max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 30px rgba(255,255,255,0.1); }
+
+        /* 裏話モーダル */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 4000;
+            padding: 20px;
+            backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            background: var(--bg-color);
+            width: 100%;
+            max-width: 800px;
+            max-height: 85vh;
+            border-radius: 25px;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            border: 2px solid var(--accent-color);
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            color: var(--accent-color);
+            line-height: 1;
+        }
+        .urabana-section { margin-bottom: 40px; }
+        .urabana-section h3 { 
+            color: var(--accent-color); 
+            border-bottom: 2px dashed var(--accent-color);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
         }
 
-        /* 異界モード演出 */
-        body.unsung-mode .gallery-item {
-            border-color: #333;
-            filter: grayscale(0.5) contrast(1.2);
+        /* 異界モード時 */
+        body.unsung-mode .carousel-item img { filter: grayscale(0.5) contrast(1.2) brightness(0.7); }
+        body.unsung-mode .urabana-trigger-btn { background: var(--accent-color); }
+
+        @media (max-width: 768px) {
+            .urabana-trigger-btn { top: 10px; left: 10px; padding: 5px 12px; font-size: 0.7rem; }
+            .carousel-item { width: 80px; }
+            .carousel-item.active { width: 280px; }
+            .modal-content { padding: 25px; }
         }
     </style>
 </head>
 <body>
+
+    <!-- 裏話ボタン（左上に移動） -->
+    <button class="urabana-trigger-btn" onclick="toggleModal('urabana-modal', true)">
+        <span>△</span> 制作秘話
+    </button>
 
     <header class="site-header container">
         <h1 class="logo-title">ゆるデュオ△</h1>
@@ -109,102 +181,131 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main>
         <!-- エピソードタイトル -->
-        <div style="text-align: center; margin-bottom: 30px;">
+        <div class="container" style="text-align: center; margin-bottom: 20px;">
             <div style="font-size: 1rem; font-weight: bold; color: var(--accent-color);">Episode 01</div>
-            <h2 style="font-size: 2rem;">かどでのほしぞら</h2>
+            <h2 class="normal-only" style="font-size: 2rem;">かどでのほしぞら</h2>
+            <h2 class="unsung-only" style="font-size: 2rem; color: var(--accent-color);">はじまり の おわり</h2>
         </div>
 
-        <!-- ギャラリー -->
-        <section class="story-gallery">
-            <div class="gallery-item">
-                <img src="https://placehold.jp/24/e67e22/ffffff/800x450.png?text=挿絵1：本栖湖の景色" alt="思い出1">
+        <!-- 3Dカルーセル -->
+        <section class="carousel-section">
+            <div class="carousel-container" id="main-carousel">
+                <div class="carousel-item" onclick="openOverlay(this)"><img src="https://placehold.jp/45/e67e22/ffffff/800x450.png?text=Scene+1" alt="スチル1"></div>
+                <div class="carousel-item active" onclick="openOverlay(this)"><img src="https://placehold.jp/45/e67e22/ffffff/800x450.png?text=Main+Still" alt="メインスチル"></div>
+                <div class="carousel-item" onclick="openOverlay(this)"><img src="https://placehold.jp/45/e67e22/ffffff/800x450.png?text=Scene+3" alt="スチル3"></div>
             </div>
-            <div class="gallery-item">
-                <img src="https://placehold.jp/24/e67e22/ffffff/800x450.png?text=挿絵2：焚き火を囲む二人" alt="思い出2">
-            </div>
-            <div class="gallery-item">
-                <img src="https://placehold.jp/24/e67e22/ffffff/800x450.png?text=マップ画像：浩庵キャンプ場" alt="思い出3">
+            <div style="text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+                <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(-1)">◀ Prev</button>
+                <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(1)">Next ▶</button>
             </div>
         </section>
 
         <!-- あらすじ -->
-        <section class="synopsis">
-            <h2 class="tape-header">Synopsis</h2>
-            <div class="card">
-                <p>
-                    記念すべき第1話。マコトとなでこが初めて二人でキャンプの約束を交わした場所、本栖湖。
-                    冬の澄んだ空気の中、マコトは一人で静かに焚き火を楽しもうとしていたが、
-                    そこへ迷子になったなでこが現れる。
-                </p>
-                <p style="margin-top: 1rem;">
-                    温かいカレーめんを分け合い、満天の星空を見上げた二人の日常は、
-                    不意に音を立てて崩れ、真っ白な異界へと飲み込まれていく……。
-                </p>
-            </div>
-        </section>
-
-        <!-- 詳細情報 -->
-        <div class="story-details-grid">
-            <!-- スポット紹介 -->
-            <div class="detail-block">
-                <h3 class="tape-header" style="transform: none; margin-bottom: 15px;">Visited Spot</h3>
-                <div class="card">
-                    <h4 style="color: var(--accent-color);">本栖湖（浩庵キャンプ場）</h4>
-                    <p style="font-size: 0.9rem; margin-top: 5px;">
-                        千円札の裏側のモデルとしても知られる絶景スポット。マコトがソロキャンプをしていた場所。
-                    </p>
+        <div class="container">
+            <section class="synopsis">
+                <h2 class="tape-header">Synopsis</h2>
+                <div class="card normal-only">
+                    <p>記念すべき第1話。マコトとなでこが初めて二人でキャンプの約束を交わした場所、本栖湖。冬の澄んだ空気の中、マコトは一人で静かに焚き火を楽しもうとしていたが、そこへ迷子になったなでこが現れる。</p>
+                    <p style="margin-top: 1rem;">温かいカレーめんを分け合い、満天の星空を見上げた二人の日常は、穏やかに過ぎていくはずだった。</p>
                 </div>
-            </div>
-
-            <!-- グルメ・名所 -->
-            <div class="detail-block">
-                <h3 class="tape-header" style="transform: none; margin-bottom: 15px;">Gourmet & Tips</h3>
-                <div class="card">
-                    <h4 style="color: var(--accent-color);">カレーめん</h4>
-                    <p style="font-size: 0.9rem; margin-top: 5px;">
-                        なでこがマコトから分けてもらった、最高のごちそう。寒い冬の夜には欠かせない。
-                    </p>
+                <div class="card unsung-only">
+                    <p>星空が真っ赤に染まり、湖が鏡のように空を映し出す。カレーめんの湯気は冷たく凍りつき、なでこの瞳からは光が消えた。</p>
+                    <p style="margin-top: 1rem;">「ねえ、マコトちゃん。ここ、どこかな？」<br>バインダーとしての目覚め。二人が最初に足を踏み入れたのは、幸福な記憶が反転した絶望の淵だった。</p>
                 </div>
-            </div>
+            </section>
 
-            <!-- 登場キャラクター -->
-            <div class="detail-block">
-                <h3 class="tape-header" style="transform: none; margin-bottom: 15px;">Cast</h3>
-                <div class="card mini-char-list">
-                    <div class="mini-char-item">
-                        <div class="mini-char-icon"><img src="https://placehold.jp/50x50.png?text=M" alt="マコト"></div>
-                        蛇場見 マコト
+            <!-- 訪れた場所 -->
+            <section style="margin-top: 50px;">
+                <h2 class="tape-header">Visited Spots</h2>
+                <div class="spot-grid">
+                    <div class="card normal-only">
+                        <img src="https://placehold.jp/24/e67e22/ffffff/600x400.png?text=本栖湖" class="spot-image" onclick="openOverlay(this)">
+                        <h4>本栖湖（浩庵キャンプ場）</h4>
+                        <p>富士山を一望できる絶景スポット。二人の旅の原点。</p>
                     </div>
-                    <div class="mini-char-item">
-                        <div class="mini-char-icon"><img src="https://placehold.jp/50x50.png?text=N" alt="なでこ"></div>
-                        川根 なでこ
+                    <div class="card unsung-only">
+                        <img src="https://placehold.jp/24/8e44ad/ffffff/600x400.png?text=異界：蒼湖" class="spot-image" onclick="openOverlay(this)">
+                        <h4 style="color: var(--accent-color);">静止した蒼湖</h4>
+                        <p>異界化により色彩を失った湖畔。水面は鏡のように硬く、波一つ立たない。</p>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
 
-        <!-- 戻るボタン -->
-        <div style="text-align: center; margin-top: 60px;">
-            <a href="story.html" class="nav-item">一覧に戻る</a>
+        <div style="text-align: center; margin: 80px 0;">
+            <a href="story.html" class="nav-item">ストーリー一覧に戻る</a>
         </div>
     </main>
+
+    <!-- 裏話モーダル -->
+    <div id="urabana-modal" class="modal" onclick="toggleModal('urabana-modal', false)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="toggleModal('urabana-modal', false)">&times;</span>
+            <h2 class="tape-header">Urabana - 制作秘話</h2>
+            
+            <div class="urabana-section" style="margin-top: 30px;">
+                <h3>○○について：初期設定の変遷</h3>
+                <p>当初、なでこは機械の体ではなく「幽霊」として登場する案もありました。しかし、よりキャンプの感触を大切にするために現在の設定に落ち着きました。</p>
+                <img src="https://placehold.jp/24/cccccc/ffffff/600x300.png?text=設定ラフ画像" style="width: 100%; border-radius: 12px; margin-top: 15px;" onclick="openOverlay(this)">
+            </div>
+
+            <div class="urabana-section">
+                <h3>○○について：行くかもしれなかった場所</h3>
+                <p>第1話の目的地として検討されていた山中湖のイメージ写真です。実際のセッションでは本栖湖になりましたが、こちらの風景もいつか使いたいですね。</p>
+                <img src="https://placehold.jp/24/cccccc/ffffff/600x300.png?text=没案：山中湖のイメージ" style="width: 100%; border-radius: 12px; margin-top: 15px;" onclick="openOverlay(this)">
+            </div>
+        </div>
+    </div>
+
+    <!-- 画像拡大用オーバーレイ -->
+    <div id="image-overlay" class="overlay" onclick="this.style.display='none'">
+        <img id="overlay-img" src="" alt="拡大画像">
+    </div>
 
     <footer class="main-footer">
         <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
     </footer>
 
-    <!-- 異界化ボタン -->
+    <!-- 異界化ボタン（右下） -->
     <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
         <span id="toggle-icon">△</span>
     </button>
 
     <script>
+        // モード切替（あらすじ・スポット情報の切り替え）
         function toggleMode() {
             const isUnsung = document.body.classList.toggle('unsung-mode');
-            const icon = document.getElementById('toggle-icon');
-            icon.innerText = isUnsung ? '●' : '△';
+            document.getElementById('toggle-icon').innerText = isUnsung ? '●' : '△';
+        }
+
+        // カルーセル回転（中央を強調）
+        let currentIdx = 1;
+        function rotateCarousel(dir) {
+            const items = document.querySelectorAll('.carousel-item');
+            items[currentIdx].classList.remove('active');
+            
+            currentIdx = (currentIdx + dir + items.length) % items.length;
+            items[currentIdx].classList.add('active');
+            
+            // 中央へスクロール
+            items[currentIdx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        // 画像拡大表示
+        function openOverlay(el) {
+            const overlay = document.getElementById('image-overlay');
+            const overlayImg = document.getElementById('overlay-img');
+            const sourceImg = el.tagName === 'IMG' ? el.src : el.querySelector('img').src;
+            overlayImg.src = sourceImg;
+            overlay.style.display = 'flex';
+        }
+
+        // モーダル表示制御
+        function toggleModal(id, show) {
+            const modal = document.getElementById(id);
+            modal.style.display = show ? 'flex' : 'none';
         }
     </script>
 </body>
