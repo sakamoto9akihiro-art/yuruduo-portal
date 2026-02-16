@@ -41,6 +41,7 @@
             background: rgba(0,0,0,0.02);
             margin-bottom: 40px;
             position: relative;
+            min-height: 400px;
         }
         .carousel-container {
             display: flex;
@@ -48,9 +49,10 @@
             align-items: center;
             gap: 15px;
             perspective: 1000px;
+            min-height: 300px;
         }
         .carousel-item {
-            width: 220px;
+            width: 200px;
             aspect-ratio: 16/9;
             border-radius: 12px;
             overflow: hidden;
@@ -59,12 +61,13 @@
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
             cursor: pointer;
             opacity: 0.5;
-            transform: scale(0.8) rotateY(10deg);
+            transform: scale(0.8);
+            flex-shrink: 0;
         }
         .carousel-item.active {
-            width: clamp(300px, 60vw, 550px);
+            width: clamp(280px, 65vw, 600px);
             opacity: 1;
-            transform: scale(1) rotateY(0deg);
+            transform: scale(1);
             z-index: 10;
             box-shadow: 0 20px 50px rgba(0,0,0,0.25);
             border-width: 6px;
@@ -77,12 +80,16 @@
         body.unsung-mode .normal-only { display: none; }
         body.unsung-mode .unsung-only { display: block; }
 
-        /* スポット紹介 */
+        /* 旅のスポット */
         .spot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 25px;
             margin-top: 30px;
+        }
+        .spot-card {
+            display: flex;
+            flex-direction: column;
         }
         .spot-image {
             width: 100%;
@@ -151,20 +158,20 @@
         }
 
         /* 異界モード時 */
-        body.unsung-mode .carousel-item img { filter: grayscale(0.5) contrast(1.2) brightness(0.7); }
-        body.unsung-mode .urabana-trigger-btn { background: var(--accent-color); }
+        body.unsung-mode .carousel-item img { filter: contrast(1.1) brightness(0.8) sepia(0.2) hue-rotate(-20deg); }
 
         @media (max-width: 768px) {
             .urabana-trigger-btn { top: 10px; left: 10px; padding: 5px 12px; font-size: 0.7rem; }
             .carousel-item { width: 80px; }
             .carousel-item.active { width: 280px; }
             .modal-content { padding: 25px; }
+            .spot-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 裏話ボタン（左上に移動） -->
+    <!-- 裏話ボタン -->
     <button class="urabana-trigger-btn" onclick="toggleModal('urabana-modal', true)">
         <span>△</span> 制作秘話
     </button>
@@ -189,12 +196,10 @@
             <h2 class="unsung-only" style="font-size: 2rem; color: var(--accent-color);">はじまり の おわり</h2>
         </div>
 
-        <!-- 3Dカルーセル -->
+        <!-- カルーセル -->
         <section class="carousel-section">
             <div class="carousel-container" id="main-carousel">
-                <div class="carousel-item" onclick="openOverlay(this)"><img src="https://placehold.jp/45/e67e22/ffffff/800x450.png?text=Scene+1" alt="スチル1"></div>
-                <div class="carousel-item active" onclick="openOverlay(this)"><img src="https://placehold.jp/45/e67e22/ffffff/800x450.png?text=Main+Still" alt="メインスチル"></div>
-                <div class="carousel-item" onclick="openOverlay(this)"><img src="https://placehold.jp/45/e67e22/ffffff/800x450.png?text=Scene+3" alt="スチル3"></div>
+                <!-- JavaScriptで動的に生成されます -->
             </div>
             <div style="text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
                 <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(-1)">◀ Prev</button>
@@ -205,30 +210,88 @@
         <!-- あらすじ -->
         <div class="container">
             <section class="synopsis">
-                <h2 class="tape-header">Synopsis</h2>
+                <h2 class="tape-header normal-only">あらすじ</h2>
+                <h2 class="tape-header unsung-only">異界のあらすじ</h2>
+                
                 <div class="card normal-only">
-                    <p>記念すべき第1話。マコトとなでこが初めて二人でキャンプの約束を交わした場所、本栖湖。冬の澄んだ空気の中、マコトは一人で静かに焚き火を楽しもうとしていたが、そこへ迷子になったなでこが現れる。</p>
-                    <p style="margin-top: 1rem;">温かいカレーめんを分け合い、満天の星空を見上げた二人の日常は、穏やかに過ぎていくはずだった。</p>
+                    <p>「マコトちゃん、今度一緒に星を見に行かない？」</p>
+                    <p style="margin-top: 0.5rem;">冬休みに入る少し前、なでこにそう誘われたマコト。行き先は静岡県の川根。なでこの名字と同じこの場所は、SLと吊り橋と温泉、そして星空で有名な観光地だった。秋の登山以来、再びの旅行に思いを馳せるマコトとなでこ。しかし、彼女達はひょんな事から、現実世界とは異なる『異界』へと足を踏み入れてしまうことになるのだった。</p>
                 </div>
+                
                 <div class="card unsung-only">
-                    <p>星空が真っ赤に染まり、湖が鏡のように空を映し出す。カレーめんの湯気は冷たく凍りつき、なでこの瞳からは光が消えた。</p>
-                    <p style="margin-top: 1rem;">「ねえ、マコトちゃん。ここ、どこかな？」<br>バインダーとしての目覚め。二人が最初に足を踏み入れたのは、幸福な記憶が反転した絶望の淵だった。</p>
+                    <p>迷い込んだ先は、銀河のように輝く夜空をひた走る不思議なSLの中。 そこは、吊り橋で救った子タヌキとその仲間たちが暮らす、幻想的なタヌキたちの世界だった。 しかし、異界の空はどこか暗く、星の輝きが足りない。巨大な松ぼっくりがダムに詰まり、星の流れを止めてしまっていたのだ。 元の世界へ帰るため、そして困っているタヌキたちを助けるため、マコトは的確な指揮で皆の足並みを揃え、なでこは機械の体ならではの力を発揮して未曾有の事態に立ち向かう。 二人が力を合わせて星の流れを取り戻したとき、異界の住人たちは感謝を込めて雲を吹き飛ばし、雨上がりの空には約束の、そして門出を祝うような満天の星空が広がっていた。</p>
                 </div>
             </section>
 
-            <!-- 訪れた場所 -->
+            <!-- 旅のスポット -->
             <section style="margin-top: 50px;">
-                <h2 class="tape-header">Visited Spots</h2>
-                <div class="spot-grid">
-                    <div class="card normal-only">
-                        <img src="https://placehold.jp/24/e67e22/ffffff/600x400.png?text=本栖湖" class="spot-image" onclick="openOverlay(this)">
-                        <h4>本栖湖（浩庵キャンプ場）</h4>
-                        <p>富士山を一望できる絶景スポット。二人の旅の原点。</p>
+                <h2 class="tape-header">旅のスポット</h2>
+                
+                <!-- 日常パート：旅のスポット -->
+                <div class="spot-grid normal-only">
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/prazaloco.png" class="spot-image" onclick="openOverlay(this)">
+                        <h4>プラザロコ</h4>
+                        <p>新金谷駅のすぐ近くにある、古い鉄道車両の展示やお土産コーナーが併設されたレトロな施設です。なでこに勧められて訪れたマコトは、展示されているSLの運転席で汽笛を鳴らして楽しみ、自分へのお土産として「ドラゴンの剣」と「鈴のお守り」を購入しました。</p>
                     </div>
-                    <div class="card unsung-only">
-                        <img src="https://placehold.jp/24/8e44ad/ffffff/600x400.png?text=異界：蒼湖" class="spot-image" onclick="openOverlay(this)">
-                        <h4 style="color: var(--accent-color);">静止した蒼湖</h4>
-                        <p>異界化により色彩を失った湖畔。水面は鏡のように硬く、波一つ立たない。</p>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/SL.png" class="spot-image" onclick="openOverlay(this)">
+                        <h4>SL</h4>
+                        <p>大井川鐵道で動態保存されている、昭和の雰囲気をそのまま残した歴史ある蒸気機関車です。マコトとなでこは新金谷駅から門出駅まで乗車し、窓から流れる長閑な景色を眺めながら、竹皮に包まれた<strong>「大井川ふるさと弁当」を二人で仲良く味わいました</strong>。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/kadodeooigawa.jpg" class="spot-image" onclick="openOverlay(this)">
+                        <h4>門出大井川</h4>
+                        <p>門出駅に隣接する、地域の農産物や遊び場が集まった大規模な道の駅です。なでこの案内で訪れた二人は、直売所「マルシェ」で夜のバーベキューに使う焼きそばやお肉などの食材を、カゴいっぱいになるまで買い込みました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/slsoft.jpeg" class="spot-image" onclick="openOverlay(this)">
+                        <h4>門出大井川のSLソフト</h4>
+                        <p>施設内の売店で販売されている、SLの煙や漆黒をイメージした竹炭パウダー入りのユニークなソフトクリームです。マコトとなでこは「ミックス」や「漆黒」を堪能し、真っ黒になったお互いの舌を見せ合って笑い合うという、微笑ましいひとときを過ごしました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/chabashira.jpg" class="spot-image" onclick="openOverlay(this)">
+                        <h4>門出大井川の茶柱神殿</h4>
+                        <p>静岡名産の川根茶をモチーフにした、巨大な茶柱のオブジェが並ぶ神殿のような幻想的なエリアです。マコトはなでこと共に16種類の茶葉の飲み比べに挑戦し、それぞれの渋みやコクの違いを敏感に感じ取る「お茶ソムリエ」のようなやりとりをしました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/yumenoturibashi.jpeg" class="spot-image" onclick="openOverlay(this)">
+                        <h4>夢の吊り橋</h4>
+                        <p>川根エリアで非常に有名で、豊かな森と川に囲まれた、古くスリル満点な吊り橋です。 高い場所を怖がりながら渡っていたマコトとなでこでしたが、マコトが橋から転落しそうになった子タヌキを間一髪で救い出し、なでこがその体を支えて助け合いました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/yumenoturibashi.jpeg" class="spot-image" onclick="openOverlay(this)">
+                        <h4>湖上カフェ</h4>
+                        <p>奥大井湖上駅のすぐ近くにあり、雨天時には避難所としても機能する温かな雰囲気のカフェです。急な雨に見舞われたマコトとなでこはここでココアを飲みながら雨宿りをし、心地よい雨音の中で眠りに落ちたことがきっかけで、不思議な異界へと迷い込むことになりました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/okuooikojho.png" class="spot-image" onclick="openOverlay(this)">
+                        <h4>奥大井湖上駅</h4>
+                        <p>湖に浮かぶように位置する絶景の駅で、周囲に人工の光がないため冬季限定の「星空列車」で満天の星を鑑賞できます。異界から帰還したマコトとなでこは、雨上がりの澄み渡った夜空に輝く星々を見上げ、「ずっと一緒にいられますように」と同じ願いを流れ星に込めました。</p>
+                    </div>
+                </div>
+
+                <!-- 異界パート：旅のスポット -->
+                <div class="spot-grid unsung-only">
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/ikai1.png" class="spot-image" onclick="openOverlay(this)">
+                        <h4 style="color: var(--accent-color);">大星川鐡道のSL</h4>
+                        <p>銀河鉄道のように夜空を飛ぶ不思議な列車で、窓の外には巨大な松ぼっくりが隕石のように漂っています。運転士たちが不測の事態で動けなくなったため、なでこが石炭を焚き、マコトが舵を操縦して障害物を避けながら進みました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/ikai2.png" class="spot-image" onclick="openOverlay(this)">
+                        <h4 style="color: var(--accent-color);">タヌキのお宿『タヌキ温泉 ふれあいの湯』</h4>
+                        <p>駅を降りた先にある立派な和風旅館で、女将をはじめ多くのタヌキたちが働いています。マコトとなでこはここで情報を集めつつ不思議な温泉に浸かり、心身ともに旅の疲れを癒やしました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/ikai3.jpg" class="spot-image" onclick="openOverlay(this)">
+                        <h4 style="color: var(--accent-color);">星川ダム</h4>
+                        <p>星の流れを管理する巨大な建造物で、その「放星口」に巨大な松ぼっくりが詰まったことで星が流れなくなっていました。マコトが指揮を執ってバラバラだったタヌキたちの足並みを揃え、なでこが持ち前の力でロープを引くことで、見事に詰まりを解消することに成功しました。</p>
+                    </div>
+                    <div class="card spot-card">
+                        <img src="04_assets/Story/story01/ikai4.jpg" class="spot-image" onclick="openOverlay(this)">
+                        <h4 style="color: var(--accent-color);">星の川下りとボート『ガチガチ山弐号』</h4>
+                        <p>タヌキたちが恩返しとして提供してくれた、星の川を弾いて進む決して沈まない丈夫な木造船です。元の世界へ帰るためにマコトとなでこが乗り込み、途中で座礁しかける困難に見舞われながらも、二人の強い絆と力で光り輝く出口へと辿り着きました。</p>
                     </div>
                 </div>
             </section>
@@ -246,15 +309,14 @@
             <h2 class="tape-header">Urabana - 制作秘話</h2>
             
             <div class="urabana-section" style="margin-top: 30px;">
-                <h3>○○について：初期設定の変遷</h3>
-                <p>当初、なでこは機械の体ではなく「幽霊」として登場する案もありました。しかし、よりキャンプの感触を大切にするために現在の設定に落ち着きました。</p>
-                <img src="https://placehold.jp/24/cccccc/ffffff/600x300.png?text=設定ラフ画像" style="width: 100%; border-radius: 12px; margin-top: 15px;" onclick="openOverlay(this)">
+                <h3>演出の意図について：門出と星空</h3>
+                <p>第1話のテーマは「門出」です。なでこが新生活を始める時期と、マコトが新しい体で一歩を踏み出す瞬間を、門出駅と星空列車で表現しました。</p>
+                <img src="04_assets/Story/story01/1main.png" style="width: 100%; border-radius: 12px; margin-top: 15px;" onclick="openOverlay(this)">
             </div>
 
             <div class="urabana-section">
-                <h3>○○について：行くかもしれなかった場所</h3>
-                <p>第1話の目的地として検討されていた山中湖のイメージ写真です。実際のセッションでは本栖湖になりましたが、こちらの風景もいつか使いたいですね。</p>
-                <img src="https://placehold.jp/24/cccccc/ffffff/600x300.png?text=没案：山中湖のイメージ" style="width: 100%; border-radius: 12px; margin-top: 15px;" onclick="openOverlay(this)">
+                <h3>システムについて：バインダーの目覚め</h3>
+                <p>本来のアンサング・デュエットでは重苦しい異界が多いですが、今回は「ゆるキャン△」の雰囲気を壊さないよう、少しファンタジックで温かいタヌキの世界を舞台にしました。</p>
             </div>
         </div>
     </div>
@@ -268,29 +330,75 @@
         <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
     </footer>
 
-    <!-- 異界化ボタン（右下） -->
+    <!-- 異界化ボタン -->
     <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
         <span id="toggle-icon">△</span>
     </button>
 
     <script>
-        // モード切替（あらすじ・スポット情報の切り替え）
-        function toggleMode() {
-            const isUnsung = document.body.classList.toggle('unsung-mode');
-            document.getElementById('toggle-icon').innerText = isUnsung ? '●' : '△';
+        const imageAssets = {
+            normal: [
+                "04_assets/Story/story01/1main.png",
+                "04_assets/Story/story01/1sutil.png",
+                "04_assets/Story/story01/1-1.png",
+                "04_assets/Story/story01/1-2.png",
+                "04_assets/Story/story01/1-3.png"
+            ],
+            unsung: [
+                "04_assets/Story/story01/1i-1.png",
+                "04_assets/Story/story01/1i-2.png",
+                "04_assets/Story/story01/1i-3.png"
+            ]
+        };
+
+        let isUnsungMode = false;
+        let currentIdx = 1;
+
+        // カルーセルの初期描画
+        function renderCarousel() {
+            const container = document.getElementById('main-carousel');
+            container.innerHTML = '';
+            const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal;
+            
+            // 範囲外チェック
+            if (currentIdx >= images.length) currentIdx = 0;
+
+            images.forEach((src, i) => {
+                const item = document.createElement('div');
+                item.className = `carousel-item ${i === currentIdx ? 'active' : ''}`;
+                item.onclick = () => {
+                    currentIdx = i;
+                    renderCarousel();
+                    openOverlay(item);
+                };
+                const img = document.createElement('img');
+                img.src = src;
+                img.alt = `Slide ${i}`;
+                item.appendChild(img);
+                container.appendChild(item);
+            });
+            
+            // アクティブ要素を中央へ
+            const activeItem = container.children[currentIdx];
+            if (activeItem) {
+                activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
         }
 
-        // カルーセル回転（中央を強調）
-        let currentIdx = 1;
+        // モード切替
+        function toggleMode() {
+            isUnsungMode = !isUnsungMode;
+            document.body.classList.toggle('unsung-mode', isUnsungMode);
+            document.getElementById('toggle-icon').innerText = isUnsungMode ? '●' : '△';
+            currentIdx = 1; // モード切替時に中央をリセット
+            renderCarousel();
+        }
+
+        // カルーセル回転
         function rotateCarousel(dir) {
-            const items = document.querySelectorAll('.carousel-item');
-            items[currentIdx].classList.remove('active');
-            
-            currentIdx = (currentIdx + dir + items.length) % items.length;
-            items[currentIdx].classList.add('active');
-            
-            // 中央へスクロール
-            items[currentIdx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal;
+            currentIdx = (currentIdx + dir + images.length) % images.length;
+            renderCarousel();
         }
 
         // 画像拡大表示
@@ -304,9 +412,12 @@
 
         // モーダル表示制御
         function toggleModal(id, show) {
-            const modal = document.getElementById(id);
-            modal.style.display = show ? 'flex' : 'none';
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
         }
+
+        window.onload = () => {
+            renderCarousel();
+        };
     </script>
 </body>
 </html>
