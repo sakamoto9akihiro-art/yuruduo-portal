@@ -74,11 +74,13 @@
         }
         .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* コンテンツ切り替え表示 */
+        /* コンテンツ切り替え表示ロジック */
         .normal-only { display: block; }
         .unsung-only { display: none; }
-        body.unsung-mode .normal-only { display: none; }
-        body.unsung-mode .unsung-only { display: block; }
+        
+        /* 異界モード(unsung-mode)が有効な時 */
+        body.unsung-mode .normal-only { display: none !important; }
+        body.unsung-mode .unsung-only { display: block !important; }
 
         /* 旅のスポット */
         .spot-grid {
@@ -157,7 +159,7 @@
             margin-bottom: 15px;
         }
 
-        /* 異界モード時 */
+        /* 異界モード時のカルーセル加工 */
         body.unsung-mode .carousel-item img { filter: contrast(1.1) brightness(0.8) sepia(0.2) hue-rotate(-20deg); }
 
         @media (max-width: 768px) {
@@ -193,7 +195,7 @@
         <div class="container" style="text-align: center; margin-bottom: 20px;">
             <div style="font-size: 1rem; font-weight: bold; color: var(--accent-color);">Episode 01</div>
             <h2 class="normal-only" style="font-size: 2rem;">かどでのほしぞら</h2>
-            <h2 class="unsung-only" style="font-size: 2rem; color: var(--accent-color);">かどでのほしぞら</h2>
+            <h2 class="unsung-only" style="font-size: 2rem; color: var(--accent-color);">はじまり の おわり</h2>
         </div>
 
         <!-- カルーセル -->
@@ -213,11 +215,13 @@
                 <h2 class="tape-header normal-only">あらすじ</h2>
                 <h2 class="tape-header unsung-only">異界のあらすじ</h2>
                 
+                <!-- 日常あらすじ -->
                 <div class="card normal-only">
                     <p>「マコトちゃん、今度一緒に星を見に行かない？」</p>
                     <p style="margin-top: 0.5rem;">冬休みに入る少し前、なでこにそう誘われたマコト。行き先は静岡県の川根。なでこの名字と同じこの場所は、SLと吊り橋と温泉、そして星空で有名な観光地だった。秋の登山以来、再びの旅行に思いを馳せるマコトとなでこ。しかし、彼女達はひょんな事から、現実世界とは異なる『異界』へと足を踏み入れてしまうことになるのだった。</p>
                 </div>
                 
+                <!-- 異界あらすじ -->
                 <div class="card unsung-only">
                     <p>迷い込んだ先は、銀河のように輝く夜空をひた走る不思議なSLの中。 そこは、吊り橋で救った子タヌキとその仲間たちが暮らす、幻想的なタヌキたちの世界だった。 しかし、異界の空はどこか暗く、星の輝きが足りない。巨大な松ぼっくりがダムに詰まり、星の流れを止めてしまっていたのだ。 元の世界へ帰るため、そして困っているタヌキたちを助けるため、マコトは的確な指揮で皆の足並みを揃え、なでこは機械の体ならではの力を発揮して未曾有の事態に立ち向かう。 二人が力を合わせて星の流れを取り戻したとき、異界の住人たちは感謝を込めて雲を吹き飛ばし、雨上がりの空には約束の、そして門出を祝うような満天の星空が広がっていた。</p>
                 </div>
@@ -271,7 +275,7 @@
                     </div>
                 </div>
 
-                <!-- 異界パート：旅のスポット -->
+                <!-- 異界パート：旅のスポット（日常モードでは非表示） -->
                 <div class="spot-grid unsung-only">
                     <div class="card spot-card">
                         <img src="04_assets/Story/story01/ikai1.png" class="spot-image" onclick="openOverlay(this)">
@@ -330,7 +334,7 @@
         <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
     </footer>
 
-    <!-- 異界化ボタン -->
+    <!-- 異界化ボタン（右下固定） -->
     <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
         <span id="toggle-icon">△</span>
     </button>
@@ -354,13 +358,12 @@
         let isUnsungMode = false;
         let currentIdx = 1;
 
-        // カルーセルの初期描画
+        // カルーセルの描画
         function renderCarousel() {
             const container = document.getElementById('main-carousel');
             container.innerHTML = '';
             const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal;
             
-            // 範囲外チェック
             if (currentIdx >= images.length) currentIdx = 0;
 
             images.forEach((src, i) => {
@@ -378,7 +381,6 @@
                 container.appendChild(item);
             });
             
-            // アクティブ要素を中央へ
             const activeItem = container.children[currentIdx];
             if (activeItem) {
                 activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
@@ -390,7 +392,9 @@
             isUnsungMode = !isUnsungMode;
             document.body.classList.toggle('unsung-mode', isUnsungMode);
             document.getElementById('toggle-icon').innerText = isUnsungMode ? '●' : '△';
-            currentIdx = 1; // モード切替時に中央をリセット
+            
+            // モード切替時に中央を1枚目にリセット
+            currentIdx = 0; 
             renderCarousel();
         }
 
@@ -410,7 +414,7 @@
             overlay.style.display = 'flex';
         }
 
-        // モーダル表示制御
+        // モーダル表示
         function toggleModal(id, show) {
             document.getElementById(id).style.display = show ? 'flex' : 'none';
         }
