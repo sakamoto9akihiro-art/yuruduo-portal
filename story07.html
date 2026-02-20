@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode 07 - ゆるデュオ△</title>
+    <!-- 共通CSSの読み込み -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- STORY詳細 独自スタイル（シリーズ共通仕様） --- */
+        .urabana-trigger-btn { position: fixed; top: 20px; left: 20px; z-index: 1000; background: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 50px; font-weight: bold; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s; display: flex; align-items: center; gap: 5px; }
+        .urabana-trigger-btn:hover { transform: scale(1.1) rotate(-5deg); background: var(--sub-accent); }
+
+        .carousel-section { padding: 60px 0; overflow: hidden; background: rgba(0,0,0,0.02); margin-bottom: 40px; position: relative; min-height: 400px; }
+        .carousel-container { display: flex; justify-content: center; align-items: center; gap: 15px; perspective: 1000px; min-height: 300px; }
+        .carousel-item { width: 200px; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.6s; cursor: pointer; opacity: 0.5; transform: scale(0.8); flex-shrink: 0; }
+        .carousel-item.active { width: clamp(280px, 65vw, 600px); opacity: 1; transform: scale(1); z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.25); border-width: 6px; }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        .normal-only { display: block !important; }
+        .unsung-only { display: none !important; }
+        body.unsung-mode .normal-only { display: none !important; }
+        body.unsung-mode .unsung-only { display: block !important; }
+
+        /* スプリットレイアウト（旅のスポット） */
+        .spot-list { display: flex; flex-direction: column; gap: 40px; margin-top: 30px; }
+        .spot-item-split { display: flex; align-items: center; gap: 40px; background: var(--card-bg); padding: 25px; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .spot-item-split:hover { transform: translateY(-3px); }
+        .spot-item-split:nth-child(even) { flex-direction: row-reverse; }
+        .spot-visual { flex: 1.2; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .spot-visual img { width: 100%; aspect-ratio: 16/9; object-fit: cover; cursor: zoom-in; transition: transform 0.5s; display: block; }
+        .spot-visual img:hover { transform: scale(1.08); }
+        .spot-info { flex: 1; }
+        .spot-info h4 { font-size: 1.3rem; color: var(--accent-color); margin-bottom: 15px; padding-left: 10px; border-left: 5px solid var(--accent-color); }
+        .spot-info p { font-size: 0.95rem; line-height: 1.8; }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 5000; cursor: zoom-out; }
+        .overlay img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 4000; padding: 20px; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg-color); width: 100%; max-width: 800px; max-height: 85vh; border-radius: 25px; overflow-y: auto; padding: 40px; position: relative; border: 2px solid var(--accent-color); }
+        .modal-close { position: absolute; top: 20px; right: 25px; font-size: 2.5rem; cursor: pointer; color: var(--accent-color); }
+        
+        body.unsung-mode .carousel-item img { filter: contrast(1.1) brightness(0.8) sepia(0.2) hue-rotate(-20deg); }
+
+        @media (max-width: 900px) { .spot-item-split, .spot-item-split:nth-child(even) { flex-direction: column; gap: 20px; } }
+    </style>
+</head>
+<body>
+
+    <button class="urabana-trigger-btn" onclick="toggleModal('urabana-modal', true)"><span>△</span> 制作秘話</button>
+
+    <header class="site-header container">
+        <h1 class="logo-title">ゆるデュオ△</h1>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item">Top</a>
+            <a href="news.html" class="nav-item">News</a>
+            <a href="story.html" class="nav-item active">Story</a>
+            <a href="character.html" class="nav-item">Character</a>
+            <a href="world.html" class="nav-item">World</a>
+            <a href="movie.html" class="nav-item">Movie</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container" style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 1rem; font-weight: bold; color: var(--accent-color);">Episode 07</div>
+            <h2 class="normal-only" style="font-size: 2rem;">その みちしるべ に すすんで</h2>
+            <h2 class="unsung-only" style="font-size: 2rem; color: var(--accent-color);">その みちしるべ に すすんで</h2>
+        </div>
+
+        <section class="carousel-section">
+            <div class="carousel-container" id="main-carousel"></div>
+            <div style="text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+                <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(-1)">◀ Prev</button>
+                <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(1)">Next ▶</button>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="synopsis">
+                <h2 class="tape-header normal-only">あらすじ</h2>
+                <h2 class="tape-header unsung-only">異界のあらすじ</h2>
+                <div class="card normal-only">
+                    <p>梅雨が明け、日差しが強くなってきたある日の事。マコトちゃんとなでこちゃんは、先生からヴェネチアへの旅に誘われます。その水の都では「レデントーレ祭」に合わせて、医療学会が開かれており、先生は招待されたようなのでした。</p>
+                    <p style="margin-top: 0.5rem;">遂になでこちゃんの念願が叶い、心待ちにしていたヴェネチア。そこでもマコトちゃんとなでこちゃんは、様々な出来事に遭遇することになるのですが…。それらも全て、終わってしまえば素敵な思い出となっていくのでしょうか？</p>
+                    <p style="margin-top: 0.5rem; font-weight: bold;">シリーズ第7話、さぁ、お手をどうぞ！</p>
+                </div>
+                <div class="card unsung-only">
+                    <p>迷い込んだ先は、現実のヴェネチアにそっくりな、けれど猫たちが言葉を話し優しく暮らす不思議な異界『ネコ・ヴェネツィア』。</p>
+                    <p style="margin-top: 0.5rem;">そこで出会ったのは、かつてペストが流行した悲劇の時代に離れ離れになり、今も娘を探し続ける喪服の女性と、母に自分の幸せを伝えたいと願う少女の幽霊アンナでした。 お父さんから託された電子銃を手に、大切ななでこちゃんを守るために勇気を持って立ち向かうマコトちゃん。</p>
+                    <p style="margin-top: 0.5rem;">二人の絆が生み出した「シャボン玉の船」が運河の空を舞い、数百年越しの切ない想いを繋ぐ奇跡を呼び起こします。 悲しい未練を乗り越え、親子の絆が再び結ばれた後に訪れる、猫たちの王宮での幻想的なShall we ダンス？。 水の都に咲き誇る大輪の花火の下、二人のアルバムにまた一つ、決して消えない最高の思い出が刻まれます。</p>
+                </div>
+            </section>
+
+            <section style="margin-top: 50px;">
+                <h2 class="tape-header">旅のスポット</h2>
+                
+                <div class="spot-list normal-only">
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/1tovenis.jpg" alt="ヴェネツィアまでの車中" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>ヴェネツィアまでの車中</h4>
+                            <p>ローマからヴェネツィアへと向かう、海の上を走るような景色が楽しめる列車です。マコトとなでこは、窓の外に広がる海を「大きなゼリー」と表現してはしゃぎながら、初めての海外旅行への期待を膨らませました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/2suso.png" alt="ジェラートSUSO" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>ジェラートSUSO</h4>
+                            <p>ヴェネツィアで最も有名なジェラート店です。マコトとなでこは看板メニューのキャラメル味など、何種類ものジェラートを「てんこ盛り」にして、そのひんやりとした甘さを堪能しました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/3kontari.jpg" alt="コンタリーニ・デル・ボヴォロの階段" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>コンタリーニ・デル・ボヴォロの階段</h4>
+                            <p>らせん状の美しい階段を持つ宮殿です。一人で黄昏れていた少女・あわもを見つけたなでこは、新機能の「シャボン玉マジック」を披露して彼女を笑顔にし、マコトと共に交流を深めました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/4restaurant.png" alt="レストラン" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>レストラン</h4>
+                            <p>地元の人やゴンドリエも通う、郷土料理が自慢の賑やかなレストランです。マコトとなでこは真っ黒なイカ墨パスタや魚介のフリットを夢中で食べ、お互いの真っ黒になった口元を見て笑い合いました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/5park.jpg" alt="リメンブランツェ公園" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>リメンブランツェ公園</h4>
+                            <p>観光地の喧騒から離れたのどかな雰囲気の公園です。マコトとなでこは海風を感じながら、今日二度目となるジェラートを味わい、仲良く写真を撮って憩いの時を過ごしました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/hukonoishi.jpg" alt="不幸の石" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>不幸の石</h4>
+                            <p>路地の石畳の中にあり、異界へ繋がる転移装置のような場所です。マリア像の前で祈っていた喪服の女性が、なでこを連れてこの場所から異界へと消え、マコトもその後を追いました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/6cafe.jpg" alt="カフェフローリアン" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>カフェフローリアン</h4>
+                            <p>カフェラテ発祥の地としても知られる世界最古の歴史的なカフェです。異界から帰還したマコトとなでこは、優雅な雰囲気の中で温かいカフェラテを飲みながら、冒険の疲れを癒やしました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/7sanmarcohoroba.jpg" alt="サンマルコ広場" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>サンマルコ広場</h4>
+                            <p>世界で最も美しいとも称されるヴェネツィアの中心的な広場です。歴史的な建築物の美しさに圧倒されながら、記念撮影をしたり鐘楼を見上げたりして楽しみました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/8syouro.jpg" alt="サンマルコ広場の鐘楼" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>サンマルコ広場の鐘楼</h4>
+                            <p>広場にそびえ立つ、ヴェネツィアのシンボルです。絶景を眺めていた際、そこで幽霊の少女アンナと出会い、彼女の切ない身の上話を聞くことになりました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/9redentole.jpg" alt="夜の花火" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>夜の花火</h4>
+                            <p>伝統的な「レデントーレ祭」のクライマックスの大輪の花火です。マコトとなでこ、そして仲間たちは、水上のボートからこの絶景を眺め、旅の思い出と絆を再確認しました。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spot-list unsung-only">
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/ikai1.jpg" alt="鑑写しの空" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">鑑写しの空</h4>
+                            <p>「ネコ・ヴェネツィア」の入り口です。マコトとなでこは不思議な生物「てくてく」と協力し、巨大なシャボンの船に乗って空の旅を楽しみながら出口を目指しました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/ikai2.jpg" alt="影のない細道" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">影のない細道</h4>
+                            <p>迷路のように入り組んだ路地が続くエリアです。連れ去られたなでこを救うため、マコトはお父さんから託された「電子銃」を使い、喪服の女性の足を止めることに成功しました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/ikai3.jpg" alt="透明な水路の街" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">透明な水路の街</h4>
+                            <p>石造りの水路がどこまでも続くエリアです。マコトが舵を握るゴンドラで進みながら、なでこが放ったシャボン玉の輝きによって、離ればなれになっていた親子を再会させました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/ikai4.png" alt="城の食堂" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">城の食堂</h4>
+                            <p>猫の王国にある豪華な会食会場です。猫のシェフ・ゴチョウの料理を味わいながら、異界の成り立ちや経験の価値について語り合いました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story07/ikai5.jpeg" alt="出逢いの結晶の城" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">出逢いの結晶の城</h4>
+                            <p>多くの猫たちが暮らす豪華な「猫の王国」です。異界の主「ケットシー」から贈り物をもらい、帰還するために二人で華麗なダンスを踊りました。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div style="text-align: center; margin: 80px 0;"><a href="story.html" class="nav-item">ストーリー一覧に戻る</a></div>
+    </main>
+
+    <div id="urabana-modal" class="modal" onclick="toggleModal('urabana-modal', false)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="toggleModal('urabana-modal', false)">&times;</span>
+            <h2 class="tape-header">Urabana - 制作秘話</h2>
+            <div class="urabana-section" style="margin-top: 30px;">
+                <h3>鋭意作成中</h3>
+                <p>しばらくお待ちください</p>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="image-overlay" class="overlay" onclick="this.style.display='none'"><img id="overlay-img" src=""></div>
+    <footer class="main-footer"><p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p></footer>
+    <button class="mode-toggle" onclick="toggleMode()"><span id="toggle-icon">△</span></button>
+
+    <script>
+        const imageAssets = {
+            normal: [
+                "04_assets/Story/story07/7main.png",
+                "04_assets/Story/story07/7-1.png",
+                "04_assets/Story/story07/7-2.png",
+                "04_assets/Story/story07/7-3.png",
+                "04_assets/Story/story07/7-4.png"
+            ],
+            unsung: [
+                "04_assets/Story/story07/7i-1.png",
+                "04_assets/Story/story07/7i-2.png",
+                "04_assets/Story/story07/7i-3.png",
+                "04_assets/Story/story07/7i-4.png",
+                "04_assets/Story/story07/7i-5.png"
+            ]
+        };
+        let isUnsungMode = false, currentIdx = 0;
+        function renderCarousel() {
+            const container = document.getElementById('main-carousel'); container.innerHTML = '';
+            const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal;
+            images.forEach((src, i) => {
+                const item = document.createElement('div'); item.className = `carousel-item ${i === currentIdx ? 'active' : ''}`;
+                item.onclick = () => { currentIdx = i; renderCarousel(); openOverlay(item); };
+                const img = document.createElement('img'); img.src = src; item.appendChild(img); container.appendChild(item);
+            });
+            const activeItem = container.children[currentIdx];
+            if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+        function toggleMode() { isUnsungMode = !isUnsungMode; document.body.classList.toggle('unsung-mode', isUnsungMode); document.getElementById('toggle-icon').innerText = isUnsungMode ? '●' : '△'; currentIdx = 0; renderCarousel(); }
+        function rotateCarousel(dir) { const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal; currentIdx = (currentIdx + dir + images.length) % images.length; renderCarousel(); }
+        function openOverlay(el) { const overlay = document.getElementById('image-overlay'), overlayImg = document.getElementById('overlay-img'); overlayImg.src = el.tagName === 'IMG' ? el.src : el.querySelector('img').src; overlay.style.display = 'flex'; }
+        function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
+        window.onload = renderCarousel;
+    </script>
+</body>
+</html>
