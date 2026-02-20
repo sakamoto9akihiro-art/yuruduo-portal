@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode 05 - ゆるデュオ△</title>
+    <!-- 共通CSSの読み込み -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* --- STORY詳細 独自スタイル（シリーズ共通仕様） --- */
+        .urabana-trigger-btn { position: fixed; top: 20px; left: 20px; z-index: 1000; background: var(--accent-color); color: white; border: none; padding: 8px 15px; border-radius: 50px; font-weight: bold; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.3s; display: flex; align-items: center; gap: 5px; }
+        .urabana-trigger-btn:hover { transform: scale(1.1) rotate(-5deg); background: var(--sub-accent); }
+
+        .carousel-section { padding: 60px 0; overflow: hidden; background: rgba(0,0,0,0.02); margin-bottom: 40px; position: relative; min-height: 400px; }
+        .carousel-container { display: flex; justify-content: center; align-items: center; gap: 15px; perspective: 1000px; min-height: 300px; }
+        .carousel-item { width: 200px; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.6s; cursor: pointer; opacity: 0.5; transform: scale(0.8); flex-shrink: 0; }
+        .carousel-item.active { width: clamp(280px, 65vw, 600px); opacity: 1; transform: scale(1); z-index: 10; box-shadow: 0 20px 50px rgba(0,0,0,0.25); border-width: 6px; }
+        .carousel-item img { width: 100%; height: 100%; object-fit: cover; }
+
+        .normal-only { display: block !important; }
+        .unsung-only { display: none !important; }
+        body.unsung-mode .normal-only { display: none !important; }
+        body.unsung-mode .unsung-only { display: block !important; }
+
+        /* スプリットレイアウト（旅のスポット） */
+        .spot-list { display: flex; flex-direction: column; gap: 40px; margin-top: 30px; }
+        .spot-item-split { display: flex; align-items: center; gap: 40px; background: var(--card-bg); padding: 25px; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .spot-item-split:hover { transform: translateY(-3px); }
+        .spot-item-split:nth-child(even) { flex-direction: row-reverse; }
+        .spot-visual { flex: 1.2; overflow: hidden; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .spot-visual img { width: 100%; aspect-ratio: 16/9; object-fit: cover; cursor: zoom-in; transition: transform 0.5s; display: block; }
+        .spot-visual img:hover { transform: scale(1.08); }
+        .spot-info { flex: 1; }
+        .spot-info h4 { font-size: 1.3rem; color: var(--accent-color); margin-bottom: 15px; padding-left: 10px; border-left: 5px solid var(--accent-color); }
+        .spot-info p { font-size: 0.95rem; line-height: 1.8; }
+
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 5000; cursor: zoom-out; }
+        .overlay img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 4000; padding: 20px; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg-color); width: 100%; max-width: 800px; max-height: 85vh; border-radius: 25px; overflow-y: auto; padding: 40px; position: relative; border: 2px solid var(--accent-color); }
+        .modal-close { position: absolute; top: 20px; right: 25px; font-size: 2.5rem; cursor: pointer; color: var(--accent-color); }
+        
+        body.unsung-mode .carousel-item img { filter: contrast(1.1) brightness(0.8) sepia(0.2) hue-rotate(-20deg); }
+
+        @media (max-width: 900px) { .spot-item-split, .spot-item-split:nth-child(even) { flex-direction: column; gap: 20px; } }
+    </style>
+</head>
+<body>
+
+    <button class="urabana-trigger-btn" onclick="toggleModal('urabana-modal', true)"><span>△</span> 制作秘話</button>
+
+    <header class="site-header container">
+        <h1 class="logo-title">ゆるデュオ△</h1>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-item">Top</a>
+            <a href="news.html" class="nav-item">News</a>
+            <a href="story.html" class="nav-item active">Story</a>
+            <a href="character.html" class="nav-item">Character</a>
+            <a href="world.html" class="nav-item">World</a>
+            <a href="movie.html" class="nav-item">Movie</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container" style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 1rem; font-weight: bold; color: var(--accent-color);">Episode 05</div>
+            <h2 class="normal-only" style="font-size: 2rem;">たぬきの くにの みやつこ</h2>
+            <h2 class="unsung-only" style="font-size: 2rem; color: var(--accent-color);">たぬきの くにの みやつこ</h2>
+        </div>
+
+        <section class="carousel-section">
+            <div class="carousel-container" id="main-carousel"></div>
+            <div style="text-align: center; margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+                <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(-1)">◀ Prev</button>
+                <button class="nav-item" style="padding: 8px 20px;" onclick="rotateCarousel(1)">Next ▶</button>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="synopsis">
+                <h2 class="tape-header normal-only">あらすじ</h2>
+                <h2 class="tape-header unsung-only">異界のあらすじ</h2>
+                <div class="card normal-only">
+                    <p>桜の季節となった春、マコトちゃんとなでこちゃんは念願叶い、待ちに待ったキャンプへと向かうことに。2人の初キャンプ地は、静岡県にある田貫湖（たぬきこ）キャンプ場。そして今回はお父さんの車無し、久し振りの2人きりでのお出掛けです。</p>
+                    <p style="margin-top: 0.5rem;">三島、富士宮の道中寄り道グルメや観光名所を堪能しながら、田貫湖でキャンプを楽しむマコトちゃんとなでこちゃん。そんな中、地名に因んだ影響なのか、再びあの異界に2人は迷い込むことになりますが...。</p>
+                    <p style="margin-top: 0.5rem; font-weight: bold;">シリーズ第5話、あの時交わしたキャンプの約束が、遂に実現します。</p>
+                </div>
+                <div class="card unsung-only">
+                    <p>テントで眠りについた二人が目を覚ますと、そこはかつて川根で出会った子タヌキたちが暮らす、懐かしくも不思議な異界でした。 ひょんなことから、子タヌキが出場するサッカー大会「将軍杯」の決勝戦を応援することになった二人。</p>
+                    <p style="margin-top: 0.5rem;">しかし、アクシデントにより選手が足りなくなったチームを救うため、なでこは守護神、マコトは天才ストライカーとしてピッチに立つことになります。 熱戦を制し、将軍に招かれた先で待っていたのは、巨大ロボット「タヌダム」に乗り込み、宇宙に漂う巨大な松ぼっくりを排除するという、想像を超えたミッションでした。</p>
+                    <p style="margin-top: 0.5rem;">二人の絆が銀河の道を切り拓いたとき、元の世界に戻った彼女たちを待っていたのは、約束の終わりと新たな旅の始まりを祝う「ダイヤモンド富士」の絶景でした。</p>
+                </div>
+            </section>
+
+            <section style="margin-top: 50px;">
+                <h2 class="tape-header">旅のスポット</h2>
+                
+                <div class="spot-list normal-only">
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/1toukaidoshinkansen.jpeg" alt="東海道新幹線" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>東海道新幹線</h4>
+                            <p>マコトが一人で乗り込み、三島駅へと向かった東海道新幹線の車内です。車内では席を間違えて困っていた黒い瞳の少女や角の生えた少女をマコトが助け、車掌を呼んで問題を解決するという一幕がありました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/2mishimataisya.JPG" alt="三嶋大社" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>三嶋大社</h4>
+                            <p>源頼朝ゆかりの地としても知られる歴史ある大社です。待ち合わせ前に一人で訪れたマコトは「茅の輪くぐり」で厄払いをし、後に合流したなでこと共にリーゼントのような形の「福太郎」餅を味わいました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/3kakitagawa.JPG" alt="柿田川湧水公園" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>柿田川湧水公園</h4>
+                            <p>富士山の雪解け水が湧き出る「湧き間」を間近で観察できる公園です。マコトとなでこは幻想的な「柿田川ブルー」の景色を楽しみながら、行列ができる人気店「わかつき」のふわふわなどら焼きを堪能しました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/4fujinomiyataisya.jpg" alt="浅間大社" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>浅間大社</h4>
+                            <p>富士山を神として祀る美しい朱塗りの本殿が特徴の総本宮です。マコトとなでこは満開の桜の下で旅の安全を祈り、桜の枝のあかりもその景色を楽しむように揺れていました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/5tanukikokyanpuzyou.jpg" alt="田貫湖" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>田貫湖</h4>
+                            <p>富士山の麓に位置する絶景のキャンプ場です。マコトとなでこは二人で協力して初めての本格的なテント設営を行い、念願だった「キャンプの約束」をついに果たしました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/6tanukikotsuri.jpg" alt="田貫湖の釣り体験" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>田貫湖の釣り体験</h4>
+                            <p>湖畔の桟橋でヘラブナやニジマス釣りに挑戦できるアクティビティです。マコトは初めての挑戦ながら見事な腕前で釣り上げましたが、一方でなでこは一匹も釣れず丸坊主の結果に終わりました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/7tanukikoboat.jpg" alt="田貫湖のボート体験" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>田貫湖のボート体験</h4>
+                            <p>湖面に映る「逆さ富士」を間近で鑑賞できるボート体験です。なでこが頼もしくボートを漕ぎ、マコトは特等席から水面に映る美しい富士山の写真をたくさん撮影して楽しみました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/8tanukikosaicring.jpg" alt="田貫湖のサイクリング" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>田貫湖のサイクリング</h4>
+                            <p>湖の周囲を一周できるコースをレンタサイクルで巡ります。二人は二人乗りのタンデム自転車で風を切り、途中で孤高のタヌキ像「ポンポコ ポン太」と触れ合ったりしました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/9tanukikoonsen.png" alt="田貫湖の日帰り温泉" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>田貫湖の日帰り温泉</h4>
+                            <p>「休暇村富士」内にあり、富士山を一望しながら疲れを癒せる露天風呂です。絶景を見ながら入浴し、風呂上がりには牛乳を飲み干して至福の時を過ごしました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/10daiyamondfuji.jpg" alt="ダイヤモンド富士" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4>ダイヤモンド富士</h4>
+                            <p>富士山の山頂に太陽が重なる奇跡の絶景です。異界から帰還した朝、この輝きを一緒に見上げ、これからの新しい旅の約束を交わしました。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spot-list unsung-only">
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/ikai1.jpg" alt="せんげんさん神社" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">せんげんさん神社</h4>
+                            <p>以前助けた子タヌキとその家族が暮らす神社です。キャンプの夜に目を覚ました二人は、ここからサッカー大会「将軍杯」の決勝戦へ向かうことになります。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/ikai2.jpeg" alt="大星川スタジアムにっぽん平" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">大星川スタジアムにっぽん平</h4>
+                            <p>異界の住人たちが熱戦を繰り広げる巨大な競技場です。マコトはハっとトリックを決め、なでこは必殺セーブでチームを勝利に導きました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/ikai3.jpg" alt="駿河城" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">駿河城</h4>
+                            <p>タヌキ将軍の住まいです。将軍から、宇宙に浮かぶ巨大な松ぼっくりの撤去を依頼されるという、壮大な展開を迎えました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/ikai4.png" alt="タヌヤのタヌダム格納庫" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">タヌヤのタヌダム格納庫</h4>
+                            <p>最新鋭の巨大ロボット「タヌダム」の整備施設。マコトはOSからの哲学的なクイズに正解し、マスターとして認められました。</p>
+                        </div>
+                    </div>
+                    <div class="spot-item-split">
+                        <div class="spot-visual"><img src="04_assets/Story/story05/ikai5.png" alt="宇宙空間" onclick="openOverlay(this)"></div>
+                        <div class="spot-info">
+                            <h4 style="color: var(--accent-color);">宇宙空間</h4>
+                            <p>タヌダムを操縦して出撃した銀河のステージ。二人の強い絆と重力制御により、巨大な松ぼっくりを見事排除しました。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div style="text-align: center; margin: 80px 0;"><a href="story.html" class="nav-item">ストーリー一覧に戻る</a></div>
+    </main>
+
+    <div id="urabana-modal" class="modal" onclick="toggleModal('urabana-modal', false)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="toggleModal('urabana-modal', false)">&times;</span>
+            <h2 class="tape-header">Urabana - 制作秘話</h2>
+            <div class="urabana-section" style="margin-top: 30px;">
+                <h3>日常パート</h3>
+                <p>鋭意作成中、しばらくお待ちください。</p>
+            </div>
+            <div class="urabana-section">
+                <h3>異界パート</h3>
+                <p>鋭意作成中、しばらくお待ちください。</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="image-overlay" class="overlay" onclick="this.style.display='none'"><img id="overlay-img" src=""></div>
+    <footer class="main-footer"><p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p></footer>
+    <button class="mode-toggle" onclick="toggleMode()"><span id="toggle-icon">△</span></button>
+
+    <script>
+        const imageAssets = {
+            normal: [
+                "04_assets/Story/story05/5main.png",
+                "04_assets/Story/story05/5-1.png",
+                "04_assets/Story/story05/5-2.png",
+                "04_assets/Story/story05/5-3.png",
+                "04_assets/Story/story05/5-4.png"
+            ],
+            unsung: [
+                "04_assets/Story/story05/5sutil.png",
+                "04_assets/Story/story05/5i-1.png",
+                "04_assets/Story/story05/5i-2.png",
+                "04_assets/Story/story05/5i-3.png",
+                "04_assets/Story/story05/5i-4.png"
+            ]
+        };
+        let isUnsungMode = false, currentIdx = 0;
+        function renderCarousel() {
+            const container = document.getElementById('main-carousel'); container.innerHTML = '';
+            const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal;
+            images.forEach((src, i) => {
+                const item = document.createElement('div'); item.className = `carousel-item ${i === currentIdx ? 'active' : ''}`;
+                item.onclick = () => { currentIdx = i; renderCarousel(); openOverlay(item); };
+                const img = document.createElement('img'); img.src = src; item.appendChild(img); container.appendChild(item);
+            });
+            const activeItem = container.children[currentIdx];
+            if (activeItem) activeItem.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+        function toggleMode() { isUnsungMode = !isUnsungMode; document.body.classList.toggle('unsung-mode', isUnsungMode); document.getElementById('toggle-icon').innerText = isUnsungMode ? '●' : '△'; currentIdx = 0; renderCarousel(); }
+        function rotateCarousel(dir) { const images = isUnsungMode ? imageAssets.unsung : imageAssets.normal; currentIdx = (currentIdx + dir + images.length) % images.length; renderCarousel(); }
+        function openOverlay(el) { const overlay = document.getElementById('image-overlay'), overlayImg = document.getElementById('overlay-img'); overlayImg.src = el.tagName === 'IMG' ? el.src : el.querySelector('img').src; overlay.style.display = 'flex'; }
+        function toggleModal(id, show) { document.getElementById(id).style.display = show ? 'flex' : 'none'; }
+        window.onload = renderCarousel;
+    </script>
+</body>
+</html>
