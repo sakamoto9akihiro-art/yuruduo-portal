@@ -87,7 +87,7 @@
         .rule-step {
             display: flex;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             align-items: flex-start;
         }
 
@@ -108,6 +108,23 @@
         .rule-content h4 {
             margin-bottom: 5px;
             color: var(--text-color);
+        }
+        
+        .rule-content p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* オプションルール用のバッジ */
+        .optional-badge {
+            display: inline-block;
+            background: #95a5a6;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            vertical-align: middle;
+            margin-left: 8px;
         }
 
         @media (max-width: 600px) {
@@ -135,8 +152,7 @@
         <section class="map-section">
             <h2 class="tape-header">World Map</h2>
             <div class="map-container">
-                <!-- 地図画像プレースホルダー -->
-                <img src="https://placehold.jp/24/e67e22/ffffff/1200x800.png?text=現在までの旅路がマークされた地図画像(assets/common/map.jpg)" alt="旅路の地図">
+                <img src="04_assets/World/worldmap01.png" alt="旅路の地図" onerror="this.src='https://placehold.jp/24/e67e22/ffffff/1200x800.png?text=World+Map+Image+Missing'">
             </div>
             <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
                 ※マコトとなでこが訪れた場所に印がついています。
@@ -148,24 +164,32 @@
             <h2 class="tape-header">Terminology</h2>
             <div class="info-grid">
                 <div class="card term-card">
+                    <div class="term-title">異界（Anomaly）</div>
+                    <p>現実のすぐ隣に存在する別世界。人々の感情や噂話を模倣して出現し、深度を増すごとに現実離れした光景へと変貌します。シフターを取り込み、現実を侵食することを目的に動いています。</p>
+                </div>
+                <div class="card term-card">
                     <div class="term-title">バインダー（Binder）</div>
-                    <p>異界に「縛られた」者。マコトがこれに該当する。異界から帰還するための「鍵」を握る存在。</p>
+                    <p>シフターを強く想う者。特別な能力は持たない一般人ですが、シフターを現実に連れ帰るという強い意志を持ちます。異界の弱点や「ひびわれ」を見つけ出し、脱出の鍵を握る存在です。</p>
                 </div>
                 <div class="card term-card">
                     <div class="term-title">シフター（Shifter）</div>
-                    <p>異界を「移り変わる」者。なでこがこれに該当する。バインダーを導き、日常へと連れ戻す伴走者。</p>
+                    <p>異界の真の姿を見ることができる者。その瞳を異界に狙われており、一人で取り込まれれば二度と帰還できません。バインダーと手を繋ぐことで、その光景を共有することができます。</p>
                 </div>
                 <div class="card term-card">
-                    <div class="term-title">異界（Anomaly）</div>
-                    <p>日常の裏側に潜む、理不尽で不気味な世界。強い想いや事件の残滓が形を成したもの。</p>
+                    <div class="term-title">三日月財団（Crescent Foundation）</div>
+                    <p>異界を科学的に分析し、被害者を支援する国際組織。世界各地に「ホテル・クレセント」などの偽装拠点を持ちます。かつて北大西洋の本部が消滅した事件以来、多くの謎を抱えています。</p>
                 </div>
                 <div class="card term-card">
                     <div class="term-title">フラグメント（Fragment）</div>
-                    <p>二人の絆や、日常の断片。これを消費することで異界の過酷な運命に抗うことができる。</p>
+                    <p>キャラクターの個性や思い出、大切な品、パートナーへの感情を表す断片。判定の際に消費して出目を補正する力となるほか、その内容を話題にすることで「その人らしい」ロールプレイの指針となります。</p>
                 </div>
                 <div class="card term-card">
                     <div class="term-title">変異（Mutation）</div>
-                    <p>異界の影響により、肉体や精神に現れる異常。日常に戻っても消えない傷跡となることもある。</p>
+                    <p>異界の影響で心身が書き換えられてしまう現象。単なる怪我ではなく、大切な思い出や自身の個性が消失・変質することを意味します。日常に戻っても消えず「定着」してしまうこともあります。</p>
+                </div>
+                <div class="card term-card">
+                    <div class="term-title">魔術（Sorcery）</div>
+                    <p>物語や強い意志を用いて、意図的に小規模な異界（現実の歪み）を発生させる技術。現実世界の常識という「人々の物語」に阻まれるため、その行使には特殊な環境や訓練が必要です。</p>
                 </div>
             </div>
         </section>
@@ -177,30 +201,52 @@
                 <div class="rule-step">
                     <div class="step-number">1</div>
                     <div class="rule-content">
-                        <h4>シーンの進行</h4>
-                        <p>物語は複数のシーン（場所）を巡りながら進行します。各シーンでは二人の対話や探索が行われます。</p>
+                        <h4>フラグメントと判定</h4>
+                        <p>キャラクターの個性や思い出を表す「フラグメント」は、判定の出目を2点増加させる力になります（1セッション6回まで）。バインダーは2d6、シフターは1d10を振り、GMの出す「異界深度」以上の値を出すことで危機を回避します。</p>
                     </div>
                 </div>
                 <div class="rule-step">
                     <div class="step-number">2</div>
                     <div class="rule-content">
-                        <h4>異界深度と判定</h4>
-                        <p>シーンごとに設定された「異界深度」以上の出目を出すことで、安全に物語を進められます。<br>
-                        バインダーは2d6、シフターは1d10で判定を行います。</p>
+                        <h4>変異と忘却</h4>
+                        <p>判定に失敗すると「変異」が発生し、フラグメントを一つ「忘却」します。忘却された思い出は、歪んだ物語に塗りつぶされたり、完全に失われたりします。既に変異した箇所がさらに侵食されると、より深刻な「重なり」の状態に陥ります。</p>
                     </div>
                 </div>
                 <div class="rule-step">
                     <div class="step-number">3</div>
                     <div class="rule-content">
-                        <h4>フラグメントの使用</h4>
-                        <p>判定に失敗しそうな時、バインダーは「フラグメント」を使用して出目を補正できます。ただし、フラグメントは有限です。</p>
+                        <h4>異界化（自発的な侵食）</h4>
+                        <p>どうしても大切な人を救いたい時、自らフラグメントを忘却して「異界化」することができます。これにより判定回数を増やしたり、仲間の変異を肩代わりしたりできます。それは自分の人間性を代償に、異界の力を引き出す禁断の手段です。</p>
                     </div>
                 </div>
                 <div class="rule-step">
                     <div class="step-number">4</div>
                     <div class="rule-content">
-                        <h4>帰還判定</h4>
-                        <p>物語のクライマックスで、二人が同時に判定に成功することで、無事に「日常」へと帰還できます。</p>
+                        <h4>日常への帰還</h4>
+                        <p>物語の最終局面（ファイナルチャプター）で、二人が共に判定に成功すれば異界から脱出できます。セッション終了後、負った変異が消えるか「定着」するかを判定します。定着した傷跡は、二人が異界を彷徨った揺るぎない証となります。</p>
+                    </div>
+                </div>
+
+                <!-- オプションルール -->
+                <div class="rule-step">
+                    <div class="step-number">5</div>
+                    <div class="rule-content">
+                        <h4>断章 <span class="optional-badge">Optional</span></h4>
+                        <p>さらなるスリルと二人の物語を深めるための追加ルール。プレイヤーが望むなら、さらに危険なチャプターへ踏み込むことができます。あともう一歩、希望が砕かれるかもしれない過酷な場所へと歩を進める決断です。</p>
+                    </div>
+                </div>
+                <div class="rule-step">
+                    <div class="step-number">6</div>
+                    <div class="rule-content">
+                        <h4>二重判定 <span class="optional-badge">Optional</span></h4>
+                        <p>より危機的な状況を表現する判定ルール。ダイスを2回振り、合計で何回成功したかによって結末が分岐します。全てに成功すれば最高の結果が得られますが、回数が少ない場合は重い変異を抱えての帰還となるかもしれません。</p>
+                    </div>
+                </div>
+                <div class="rule-step">
+                    <div class="step-number">7</div>
+                    <div class="rule-content">
+                        <h4>秘めごと <span class="optional-badge">Optional</span></h4>
+                        <p>誰にも言えない本当の自分を隠しておくルール。フラグメントを1つパートナーに内密にしたままセッションを開始します。隠された過去や想いが明かされる瞬間、二人の関係性はより深く描かれることになります。</p>
                     </div>
                 </div>
             </div>
@@ -212,7 +258,7 @@
         <p>&copy; ゆるデュオ△ 制作委員会 / Unsung Duet Project</p>
     </footer>
 
-    <!-- 異界化ボタン -->
+    <!-- モード切替ボタン -->
     <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()">
         <span id="toggle-icon">△</span>
     </button>
