@@ -236,10 +236,12 @@
         </div>
     </div>
 
-    <!-- 異界化ボタン -->
+    <!-- 【編集ポイント1】ボタン本体のコメントアウト -->
+    <!-- 異界化ボタンを一時的に非表示
     <button class="mode-toggle" title="世界を反転させる" onclick="toggleMode()" style="position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; border: none; background: var(--accent-color, #e67e22); color: white; cursor: pointer; z-index: 1000; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;">
         <span id="toggle-icon">△</span>
     </button>
+    -->
 
     <script>
         // モーダル操作用
@@ -259,7 +261,8 @@
             document.body.style.overflow = 'auto';
         }
 
-        // モード切替
+        // 【編集ポイント2】モード切替機能（関数）のコメントアウト
+        /* モード切替機能の停止
         function toggleMode() {
             const isUnsung = document.body.classList.toggle('unsung-mode');
             const icon = document.getElementById('toggle-icon');
@@ -273,6 +276,7 @@
                 document.documentElement.style.setProperty('--card-bg', '#fff');
             }
         }
+        */
 
         // ESCキーでモーダルを閉じる
         document.addEventListener('keydown', (e) => {
@@ -280,4 +284,5 @@
         });
     </script>
 </body>
+
 </html>
